@@ -44,6 +44,7 @@ public class Testing extends LinearOpMode {
 
     //Values
     static final double WHEEL_DIAMETER = 4.0; //In inches
+    static final int TETRIX_TICK_PER_REV = 1440;
     static final int ANDYMARK_TICKS_PER_REV = 1120;
     static final double TICKS_PER_INCH = ANDYMARK_TICKS_PER_REV / (WHEEL_DIAMETER * Math.PI); //Number of ticks in each inch (# of ticks in one rotation divided by the circumference of the wheel)
     double turnSpeed = .2;
@@ -308,5 +309,43 @@ public class Testing extends LinearOpMode {
         telemetry.update();
 
         idle();
+    }
+
+    public void encoderStrafe(double power, double distance) {
+        //Drives forward. Parameters: power = how fast you want the robot to go, distance = how far (in inches)
+        int target;
+        target = (int) (distance * TICKS_PER_INCH); //Multiply to find # of ticks to drive (then type cast to an int)
+
+        //reset encoders
+        leftFront.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        rightFront.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        leftBack.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        rightBack.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+        //set target position
+        leftFront.setTargetPosition(-target);
+        rightFront.setTargetPosition(target);
+        leftBack.setTargetPosition(target);
+        rightBack.setTargetPosition(-target);
+
+        //set to RUN_TO_POSITION mode
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //set drive power
+        driveForward(power);
+
+        while (leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy() && rightBack.isBusy()) {
+            //wait until target position is reached
+        }
+
+        //stop and change modes back to normal
+        stopDriving();
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }

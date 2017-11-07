@@ -54,6 +54,7 @@ public class AutonomousR1ColorDrive extends LinearOpMode {
     //Values
     static final double WHEEL_DIAMETER = 4.0; //In inches
     static final int ANDYMARK_TICKS_PER_REV = 1120;
+    static final int TETRIX_TICK_PER_REV = 1440;
     static final double TICKS_PER_INCH = ANDYMARK_TICKS_PER_REV / (WHEEL_DIAMETER * Math.PI); //Number of ticks in each inch (# of ticks in one rotation divided by the circumference of the wheel)
     double turnSpeed = .2;
     int zAccumulated; //total rotation left/right
