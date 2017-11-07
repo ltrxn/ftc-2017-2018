@@ -1,6 +1,6 @@
 ## Liwen's Code
 
-This folder includes all of my code. Using the *Testing* file to test the robot.
+This folder includes all of my code. 
 
 ## File Description
 * R1 = Red alliance position closest to relic drop off area (top right)
