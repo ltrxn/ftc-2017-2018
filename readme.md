@@ -17,6 +17,7 @@ This folder includes all of my code.
 * (T)TeleOpIdeal = Ideal teleop code for real thing (mecanum drive).
 
 * HardwareMichaelScott = Hardware of the robot. This class initializes all the motors, servos, and sensors.
+* HardwareIdeal = Hardware of the "ideal robot".
 
 You can use the hardware class by this code:
 ```
