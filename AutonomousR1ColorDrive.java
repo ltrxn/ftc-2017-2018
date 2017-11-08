@@ -8,6 +8,8 @@ SO FAR NOTHING HAS BEEN CHANGED- SAME AS AUTONOMOUSR1ENCODERDRIVE
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -23,6 +25,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 /**
  * Created by Liwen Trxn on 10/19/2017.
  */
+@Autonomous(name="R1 - Color", group="real")
+@Disabled
 
 public class AutonomousR1ColorDrive extends LinearOpMode {
 
@@ -63,6 +67,7 @@ public class AutonomousR1ColorDrive extends LinearOpMode {
     int leftCryptoboxDistance = 36;
     double cryptoboxDrivePower = .5; //how fast to drive when going to cryptobox
     @Override
+
     public void runOpMode() throws InterruptedException {
 
         /**********************************************************

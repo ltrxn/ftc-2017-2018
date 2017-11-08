@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,7 +12,9 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by Trxn on 10/17/2017.
  */
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "LiwenOpMode", group = "TeleOps")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SuperTeleOp", group = "real")
+@Disabled
+
 public class SuperTeleOp extends LinearOpMode {
 
     //Wheel Motors
