@@ -12,10 +12,10 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by Trxn on 10/17/2017.
  */
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SuperTeleOp", group = "real")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOpIdeal", group = "real")
 @Disabled
 
-public class SuperTeleOp extends LinearOpMode {
+public class TeleOpIdeal extends LinearOpMode {
 
     //Wheel Motors
     public DcMotor leftFront;
