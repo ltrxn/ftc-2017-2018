@@ -9,11 +9,20 @@ This folder includes all of my code.
 * B2 = Blue alliance position away from relic drop off area (bottom left)
 
 ## Class Info
-* AutonomousR1ColorDrive = Ideal autonomous code that uses a color sensor to reach position.
-* AutonomousR1EncoderDrive = Ideal autonomous code that uses only encoders to reach position.
-* AutonomousForTesting = Test distance and random stuff in this file.
+* (A)AutonomousR1ColorDrive = Ideal autonomous code that uses a color sensor to reach position.
+* (A)AutonomousR1EncoderDrive = Ideal autonomous code that uses only encoders to reach position.
+* (A)AutonomousForTesting = Test distance and random stuff in this file.
 
-* TeleOpForTesting = This teleop is driven by tank drive.
-* TeleOpIdeal = Ideal teleop code for real thing (mecanum drive).
+* (T)TeleOpForTesting = This teleop is driven by tank drive.
+* (T)TeleOpIdeal = Ideal teleop code for real thing (mecanum drive).
 
-* HardwareMichaelScott = Hardware of the robot. This class initializes all the motors, servos, and sensors. Initialize using nameOfTheRobot.init(hardwareMap);
+* HardwareMichaelScott = Hardware of the robot. This class initializes all the motors, servos, and sensors.
+
+You can use the hardware class by this code:
+```
+//in the class
+HardwareMichaelScott robot = new HardwareMichaelScott();
+//in the method
+robot.init(hardwareMap);
+robot.exampleMotor.setPosition(.4);
+```
