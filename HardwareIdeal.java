@@ -213,8 +213,8 @@ public class HardwareIdeal {
 
         //set target position
         leftFront.setTargetPosition(target);
-        rightFront.setTargetPosition(target);
-        leftBack.setTargetPosition(target);
+        rightFront.setTargetPosition(-target);
+        leftBack.setTargetPosition(-target);
         rightBack.setTargetPosition(target);
 
         //set to RUN_TO_POSITION mode
@@ -263,4 +263,6 @@ public class HardwareIdeal {
     public void turnOffColorSensorGround() {
         groundColorSensor.enableLed(false);
     }
+
+
 }
