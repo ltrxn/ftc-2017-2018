@@ -21,12 +21,33 @@ public class TeleOpForTesting extends LinearOpMode{
 
 
         waitForStart();
+        while (opModeIsActive()) {
+            double rightStickY = gamepad1.left_stick_y;
+            double leftStickY = gamepad1.right_stick_y;
 
-        robot.leftFront.setPower(gamepad1.left_stick_y);
-        robot.leftBack.setPower(gamepad1.left_stick_y);
-        robot.rightFront.setPower(gamepad1.right_stick_y);
-        robot.rightBack.setPower(gamepad1.right_stick_y);
+            double rightTrigger = gamepad1.right_trigger;
+            double leftTrigger = gamepad1.left_trigger;
 
-        idle();
+            robot.leftFront.setPower(leftStickY);
+            robot.leftBack.setPower(leftStickY);
+            robot.rightFront.setPower(rightStickY);
+            robot.rightBack.setPower(rightStickY);
+
+            while (rightTrigger > leftTrigger) {
+                robot.leftFront.setPower(rightTrigger);
+                robot.leftBack.setPower(-rightTrigger);
+                robot.rightFront.setPower(-rightTrigger);
+                robot.rightBack.setPower(rightTrigger);
+            }
+            while (rightTrigger < leftTrigger) {
+                robot.leftFront.setPower(-leftTrigger);
+                robot.leftBack.setPower(leftTrigger);
+                robot.rightFront.setPower(leftTrigger);
+                robot.rightBack.setPower(-leftTrigger);
+            }
+            idle();
+        }
     }
+
+
 }

@@ -213,6 +213,45 @@ public class HardwareIdeal {
 
         //set target position
         leftFront.setTargetPosition(target);
+        rightFront.setTargetPosition(target);
+        leftBack.setTargetPosition(target);
+        rightBack.setTargetPosition(target);
+
+        //set to RUN_TO_POSITION mode
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //set drive power
+        driveForward(power);
+
+        while (leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy() && rightBack.isBusy()) {
+            //wait until target position is reached
+        }
+
+        //stop and change modes back to normal
+        stopDriving();
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+    }
+
+    public void encoderStrafe(double power, double distance) {
+        //Drives forward. Parameters: power = how fast you want the robot to go, distance = how far (in inches)
+        int target;
+        target = (int) (distance * TICKS_PER_INCH); //Multiply to find # of ticks to drive (then type cast to an int)
+
+        //reset encoders
+        leftFront.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        rightFront.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        leftBack.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        rightBack.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+        //set target position
+        leftFront.setTargetPosition(target);
         rightFront.setTargetPosition(-target);
         leftBack.setTargetPosition(-target);
         rightBack.setTargetPosition(target);
