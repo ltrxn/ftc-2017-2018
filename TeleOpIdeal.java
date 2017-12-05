@@ -88,7 +88,7 @@ public class TeleOpIdeal extends LinearOpMode {
 
             /*
             PULLY CONTROL
-            gamepad 1 - left and right trigger
+            gamepad 2 - left and right trigger
             */
             if (gamepad1.right_trigger > .1) {
                 glyphPully.setPower(.5);

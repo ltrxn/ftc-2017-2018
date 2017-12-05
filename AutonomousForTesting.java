@@ -1,17 +1,22 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 /**
  * Created by Trxn on 11/7/2017.
  */
 
 @Autonomous(name = "Autonomous Testing", group = "testing")
-public class AutonomousForTesting extends LinearOpMode{
+public class AutonomousForTesting extends LinearOpMode {
     HardwareMichaelScott robot = new HardwareMichaelScott();
 
     //Values
@@ -32,68 +37,26 @@ public class AutonomousForTesting extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
-        telemetry.addData(">", "Initialization finished. Press play to start");
-
+        telemetry.addData(">", "초기화가 완료되었습니다 (Initialization is finished)");
+        telemetry.update();
         waitForStart();
-        encoderDrive(.3, 5);
 
-    }
 
-    //DRIVING METHODS
+        while (opModeIsActive()) {
 
-    public void driveForward(double power) {
-        //Drives forward. Parameters: power = how fast you want the robot to go
-        robot.leftFront.setPower(power);
-        robot.rightFront.setPower(power);
-        robot.leftBack.setPower(power);
-        robot.rightBack.setPower(power);
-    }
+            robot.relicTrackables.activate();
+            telemetry.addData("RightJewelKnocker", robot.jewelKnockerRight.getPosition());
+            //telemetry.addData("rightclaw", robot.glyphClawRight.getPosition());
+            //telemetry.addData("leftclaw", robot.glyphClawLeft.getPosition());
+            RelicRecoveryVuMark vuMark = robot.getVuMark();
+            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+                telemetry.addData("VuMark", "%s visible", vuMark);
+            } else {
+                telemetry.addData("VuMark", "Is not visable");
+            }
+            telemetry.update();
 
-    public void stopDriving() {
-        //Stops Driving
-        robot.leftFront.setPower(0);
-        robot.rightFront.setPower(0);
-        robot.leftBack.setPower(0);
-        robot.rightBack.setPower(0);
-    }
-
-    public void encoderDrive(double power, double distance) {
-        //Drives forward. Parameters: power = how fast you want the robot to go, distance = how far (in inches)
-        int target;
-        target =  (int)(distance * TICKS_PER_INCH); //Multiply to find # of ticks to drive (then type cast to an int)
-
-        //reset encoders
-        robot.leftFront.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        robot.rightFront.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        robot.leftBack.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        robot.rightBack.setMode(DcMotor.RunMode.RESET_ENCODERS);
-
-        //set target position
-        robot.leftFront.setTargetPosition(target);
-        robot.rightFront.setTargetPosition(target);
-        robot.leftBack.setTargetPosition(target);
-        robot.rightBack.setTargetPosition(target);
-
-        //set to RUN_TO_POSITION mode
-        robot.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        //set drive power
-        driveForward(power);
-
-        while(robot.leftFront.isBusy() && robot.rightFront.isBusy() && robot.leftBack.isBusy() && robot.rightBack.isBusy()) {
-            //wait until target position is reached
-            telemetry.addData("Michael", "is a bit busy");
         }
-
-        //stop and change modes back to normal
-        this.stopDriving();
-        robot.leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 }

@@ -48,12 +48,12 @@ public class HardwareIdeal {
     public ModernRoboticsI2cGyro mrGyro;
 
 
-    //Values
+    //Encoder Drive Values
     static final double WHEEL_DIAMETER = 4.0; //In inches
     static final int ANDYMARK_TICKS_PER_REV = 1120;
     static final double DRIVE_GEAR_REDUCTION = .5;     // We have geared up, so Gear Reduction < 1
     static final int TETRIX_TICK_PER_REV = 1440;
-    static final double TICKS_PER_INCH = (TETRIX_TICK_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER * Math.PI); //Number of ticks in each inch (# of ticks in one rotation divided by the circumference of the wheel)
+    static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV  * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER * Math.PI); //Number of ticks in each inch (# of ticks in one rotation divided by the circumference of the wheel)
 
 
     //Others
@@ -84,7 +84,7 @@ public class HardwareIdeal {
         jewelKnockerLeft = map.servo.get("jewelKnockerLeft");
         jewelKnockerRight = map.servo.get("jewelKnockerRight");
 
-        rightColorSensor = map.colorSensor.get("colorRihgt");
+        rightColorSensor = map.colorSensor.get("colorRight");
         leftColorSensor = map.colorSensor.get("colorLeft");
         groundColorSensor = map.colorSensor.get("colorGround");
         sensorGyro = map.gyroSensor.get("gyro");
@@ -200,7 +200,7 @@ public class HardwareIdeal {
         rightBack.setPower(0);
     }
 
-    public void encoderDrive(double power, double distance) {
+    public int encoderDrive(double power, double distance) {
         //Drives forward. Parameters: power = how fast you want the robot to go, distance = how far (in inches)
         int target;
         target = (int) (distance * TICKS_PER_INCH); //Multiply to find # of ticks to drive (then type cast to an int)
@@ -236,7 +236,7 @@ public class HardwareIdeal {
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        return target;
     }
 
     public void encoderStrafe(double power, double distance) {
