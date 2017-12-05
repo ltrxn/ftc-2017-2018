@@ -44,10 +44,9 @@ public class AutonomousForTesting extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            robot.relicTrackables.activate();
             telemetry.addData("RightJewelKnocker", robot.jewelKnockerRight.getPosition());
-            //telemetry.addData("rightclaw", robot.glyphClawRight.getPosition());
-            //telemetry.addData("leftclaw", robot.glyphClawLeft.getPosition());
+
+            robot.relicTrackables.activate();
             RelicRecoveryVuMark vuMark = robot.getVuMark();
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
                 telemetry.addData("VuMark", "%s visible", vuMark);
@@ -57,6 +56,6 @@ public class AutonomousForTesting extends LinearOpMode {
             telemetry.update();
 
         }
-
+        idle();
     }
 }

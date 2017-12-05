@@ -138,5 +138,6 @@ public class HardwareMichaelScott {
         //vuforia - decrypts the pictograph
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         return vuMark;
+
     }
 }
