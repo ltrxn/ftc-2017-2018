@@ -12,6 +12,7 @@ This folder includes all of my code.
 * (A)AutonomousR1ColorDrive = Ideal autonomous code that uses a color sensor to reach position.
 * (A)AutonomousR1EncoderDrive = Ideal autonomous code that uses only encoders to reach position.
 * (A)AutonomousForTesting = Test distance and random stuff in this file.
+* (A)AutonomousTeamCode = The autonomous code that the whole team is working on together (from position R1)
 
 * (T)TeleOpForTesting = This teleop is driven by tank drive.
 * (T)TeleOpIdeal = Ideal teleop code for real thing (mecanum drive).
