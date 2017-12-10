@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 /**
  * Created by Vortex on 12/9/2017.
@@ -15,6 +17,7 @@ public class AutonomousR1 extends LinearOpMode {
 
     HardwareMichaelScott robot = new HardwareMichaelScott();
     public ModernRoboticsI2cGyro gyro;
+    //public ColorSensor rightColorSensor;
     private ElapsedTime runtime = new ElapsedTime();
 
     static final double ANDYMARK_TICKS_PER_REV  = 1120; //# of ticks per revolution
@@ -22,7 +25,7 @@ public class AutonomousR1 extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES   =  4;   //Diameter of the wheel
     static final double TICKS_PER_INCH          = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
 
-    static final double DRIVE_SPEED_CRYPTOBOX   = 0.6; //Speed while going to crytobox
+    static final double DRIVE_SPEED = 0.6; //Speed while going to crytobox
     static final double GYRO_TURN_SPEED         = 0.5; //Speed while turning
 
     static final int THRESHOLD                  = 2; //tolerance when turning
@@ -48,7 +51,47 @@ public class AutonomousR1 extends LinearOpMode {
 
         waitForStart();
 
-        encoderDrive(DRIVE_SPEED_CRYPTOBOX, DISTANCE_LEFT, 5);
+        RelicRecoveryVuMark vuMark = robot.getVuMark();
+
+        //knock jewel off
+        //rightColorSensor.enableLed(true); //turn on color sensor
+//        robot.lowerJewelKnockerRight();
+//        if(rightColorSensor.red()> rightColorSensor.blue()) { //if is to the right of the jewel
+//            //move the robot right
+//            gyroTurn(GYRO_TURN_SPEED, 30);
+//            gyroTurn(GYRO_TURN_SPEED, 0);
+//
+//        } else {
+//            //move the robot left
+//            gyroTurn(GYRO_TURN_SPEED, -30);
+//            gyroTurn(GYRO_TURN_SPEED, 0);
+//
+//        }
+
+
+        //drive correct distance
+        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            telemetry.addData("VuMark", "%s visible", vuMark);
+            if (vuMark == RelicRecoveryVuMark.LEFT) {
+                encoderDrive(DRIVE_SPEED, DISTANCE_LEFT, 10);
+            } else if (vuMark == RelicRecoveryVuMark.CENTER) {
+                encoderDrive(DRIVE_SPEED, DISTANCE_CENTER, 10);
+            } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                encoderDrive(DRIVE_SPEED, DISTANCE_RIGHT, 10);
+            }
+        } else {
+            telemetry.addData("VuMark", "Is not visable");
+        }
+
+        //turn 90 degrees
+        gyroTurn(GYRO_TURN_SPEED, 90);
+
+        //drive till cryptobox
+        encoderDrive(DRIVE_SPEED, 4, 5);
+
+        //release glyph
+            //code for opening glyph claw
+
         telemetry.addData(">", "Michael Scott es una bestia");
         telemetry.update();
     }

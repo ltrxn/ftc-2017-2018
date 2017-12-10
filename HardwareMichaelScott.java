@@ -28,6 +28,8 @@ public class HardwareMichaelScott {
     public Servo jewelKnockerRight = null;
     //public Servo glyphClawRight = null;
     //public Servo glyphClawLeft = null;
+    //sensors
+
 
     /******VUFORIA******/
     public VuforiaLocalizer vuforia;
