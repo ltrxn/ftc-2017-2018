@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Created by Trxn on 11/7/2017.
  */
 
-@TeleOp(name = "Drive Michael Scott", group = "testing")
+@TeleOp(name = "Drive Michael Scott", group = "Michael Scott")
 //@Disabled
 public class TeleOpMichaelScott extends LinearOpMode {
 
