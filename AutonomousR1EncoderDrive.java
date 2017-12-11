@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.teamcode.unofficial.HardwareIdeal;
 
 /**
  * Created by Liwen Trxn on 10/19/2017.
@@ -17,14 +18,15 @@ public class AutonomousR1EncoderDrive extends LinearOpMode {
     //robot
     HardwareIdeal robot = new HardwareIdeal();
 
-
     //values
     double turnSpeed = .2;
+    double cryptoboxDrivePower = .5; //how fast to drive when going to cryptobox
+
     int zAccumulated; //total rotation left/right
+
     int rightCryptoboxDistance = 20;
     int centerCryptoboxDistance = 28;
     int leftCryptoboxDistance = 36;
-    double cryptoboxDrivePower = .5; //how fast to drive when going to cryptobox
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -36,9 +38,9 @@ public class AutonomousR1EncoderDrive extends LinearOpMode {
         robot.init(hardwareMap);
 
         //grab the glyph before game starts
-        robot.closeGlyphClaw();
+            //robot.closeGlyphClaw();
 
-        telemetry.addData(">", "Initialization finished. Press play to start");
+        telemetry.addData(">", "Inicialización completa!");
         telemetry.update();
 
 

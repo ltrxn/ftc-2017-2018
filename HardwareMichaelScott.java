@@ -11,54 +11,61 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+import static org.firstinspires.ftc.teamcode.TeleOpMichaelScott.WHEEL_DIAMETER;
+
 /**
  * Created by Trxn on 11/7/2017.
  */
 
 public class HardwareMichaelScott {
+    /******HARDWARE******/
     //Wheel Motors
     public DcMotor leftFront = null;
     public DcMotor rightFront = null;
     public DcMotor leftBack = null;
     public DcMotor rightBack = null;
-
     //Servos
     public Servo jewelKnockerRight = null;
     //public Servo glyphClawRight = null;
     //public Servo glyphClawLeft = null;
+    //sensors
 
-    //Vuforia
+
+    /******VUFORIA******/
     public VuforiaLocalizer vuforia;
     public VuforiaTrackables relicTrackables;
     public VuforiaTrackable relicTemplate;
     
-    //Values
-    static final double WHEEL_DIAMETER = 4.0; //In inches
-    static final int ANDYMARK_TICKS_PER_REV = 1120;
-    static final double DRIVE_GEAR_REDUCTION = .5;     // We have geared up, so Gear Reduction < 1
+    /******VALUES******/
+    //Encoders
     static final int TETRIX_TICK_PER_REV = 1440;
-    static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER * 3.1415); //Number of ticks in each inch (# of ticks in one rotation divided by the circumference of the wheel)
-
-
-
+    static final double ANDYMARK_TICKS_PER_REV  = 1120; //# of ticks per revolution
+    static final double DRIVE_GEAR_REDUCTION    = .5;   //Since gears go from big to small, one rotation of the gear is actually only half a rotation of the wheel
+    static final double WHEEL_DIAMETER_INCHES   =  4;   //Diameter of the wheel
+    static final double TICKS_PER_INCH          = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
+   //Others
     private DcMotor.RunMode initialMode = null;
     HardwareMap map = null;
     private ElapsedTime runtime = new ElapsedTime(); // For time out (encoder drive)
 
+    //Constructors
     public HardwareMichaelScott(DcMotor.RunMode enteredMode) {
         initialMode = enteredMode;
     }
-
     public HardwareMichaelScott() {
         this(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    //Initialize
     public void init(HardwareMap aMap) {
         map = aMap;
+
+        //MOTORS
         leftFront = map.dcMotor.get("leftFront");
         rightFront = map.dcMotor.get("rightFront");
         leftBack = map.dcMotor.get("leftBack");
         rightBack = map.dcMotor.get("rightBack");
+        //SERVOS
         jewelKnockerRight = map.servo.get("jewelKnockerRight");
         //glyphClawLeft = map.servo.get("glyphClawLeft");
         //glyphClawRight = map.servo.get("glyphClawRight");
@@ -68,7 +75,6 @@ public class HardwareMichaelScott {
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-
         //ALL
         leftFront.setMode(initialMode);
         rightFront.setMode(initialMode);
@@ -76,6 +82,7 @@ public class HardwareMichaelScott {
         rightBack.setMode(initialMode);
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
+
         leftFront.setPower(0);
         rightFront.setPower(0);
         leftBack.setPower(0);
@@ -93,8 +100,13 @@ public class HardwareMichaelScott {
         relicTemplate.setName("relicVuMarkTemplate"); // not necessary
     }
 
-    //DRIVING METHODS
 
+
+
+
+
+    /******METHODS******/
+    //Drive
     public void driveForward(double power) {
         //Drives forward. Parameters: power = how fast you want the robot to go
         leftFront.setPower(power);
@@ -111,9 +123,7 @@ public class HardwareMichaelScott {
         rightBack.setPower(0);
     }
 
-
-
-    //GLYPH CLAW
+    //Servos
     public void closeClaw() {
         //glyphClawLeft.setPosition(.7);
         //glyphClawRight.setPosition(.2);
@@ -124,20 +134,71 @@ public class HardwareMichaelScott {
     }
 
     public void lowerJewelKnockerRight() {
-        //lowers jewel knocker right ***exact position yet to be determined***
+        //lowers jewel knocker right
         jewelKnockerRight.setPosition(.5);
     }
 
     public void raiseJewelKnockerRight() {
-        //raises jewel knocker right ***exact position yet to be determined***
+        //raises jewel knocker right
         jewelKnockerRight.setPosition(0);
     }
 
-    //VUFORIA
+    //Vuforia
     public RelicRecoveryVuMark getVuMark() {
-        //vuforia - decrypts the pictograph
+        //decrypts the pictograph, returns position
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         return vuMark;
 
+    }
+
+    //Encoders
+    public void resetEncoders() {
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void encoderDrive(double speed, double inches, double timeoutSeconds) {
+        //find target position
+        int newTarget;
+        newTarget = leftFront.getCurrentPosition() + (int)(inches * TICKS_PER_INCH);
+
+        //set target
+        leftFront.setTargetPosition(newTarget);
+        rightFront.setTargetPosition(newTarget);
+        leftBack.setTargetPosition(newTarget);
+        rightBack.setTargetPosition(newTarget);
+
+        //set to run to position mode
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //start timer
+        runtime.reset();
+
+        //start driving
+        driveForward(speed);
+
+        //while driving, don't stop
+        while (runtime.seconds()<timeoutSeconds &&
+                (leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy() && rightBack.isBusy())) {
+        }
+
+        //once loop is done, stop
+        stopDriving();
+
+        //turn off run to position mode
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }
