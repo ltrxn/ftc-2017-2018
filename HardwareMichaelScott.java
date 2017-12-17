@@ -88,7 +88,7 @@ public class HardwareMichaelScott {
         leftBack.setPower(0);
         rightBack.setPower(0);
         jewelKnockerRight.setPosition(0.0);
-
+        raiseJewelKnockerRight();
         //VUFORIA SETUP
         int cameraMonitorViewId = map.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", map.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);

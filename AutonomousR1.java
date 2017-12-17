@@ -38,15 +38,13 @@ public class AutonomousR1 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         //Initialize
         robot.init(hardwareMap);
-        gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
+        //gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
         robot.resetEncoders();
 
-        gyro.calibrate();
-        while(gyro.isCalibrating()){
-        }
+        //gyro.calibrate();
+        //while(gyro.isCalibrating()){
+        //}
 
-        telemetry.addData(">", "Inicialización completa!");
-        telemetry.update();
 
 
         waitForStart();
@@ -84,9 +82,10 @@ public class AutonomousR1 extends LinearOpMode {
         }
 
         //turn 90 degrees
-        gyroTurn(GYRO_TURN_SPEED, 90);
+        //gyroTurn(GYRO_TURN_SPEED, 90);
 
         //drive till cryptobox
+
         encoderDrive(DRIVE_SPEED, 4, 5);
 
         //release glyph

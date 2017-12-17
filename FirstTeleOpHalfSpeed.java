@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.outreach;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -10,9 +10,9 @@ import com.qualcomm.robotcore.util.Range;
 /**
  * Created by inthe on 11/2/2017.
  */
-@TeleOp (name = "FirstTeleOp2017")
-@Disabled
-public class FirstTeleOp extends OpMode {
+@TeleOp (name = "FirstTeleOp0.5Speed2017")
+
+public class FirstTeleOpHalfSpeed extends OpMode {
     public DcMotor leftFront;
     public DcMotor rightFront;
     public DcMotor leftBack;
@@ -65,32 +65,32 @@ public class FirstTeleOp extends OpMode {
 
         //For moving directly forward
         if (leftYvalue > 0 && rightYvalue > 0){
-            leftFront.setPower(leftYvalue);
-            leftBack.setPower(leftYvalue);
-            rightFront.setPower(rightYvalue);
-            rightBack.setPower(rightYvalue);
+            leftFront.setPower(leftYvalue/2);
+            leftBack.setPower(leftYvalue/2);
+            rightFront.setPower(rightYvalue/2);
+            rightBack.setPower(rightYvalue/2);
         }
         //for moving backward
         else if (leftYvalue < 0 && rightYvalue < 0){
-            leftFront.setPower(leftYvalue);
-            leftBack.setPower(leftYvalue);
-            rightFront.setPower(rightYvalue);
-            rightBack.setPower(rightYvalue);
+            leftFront.setPower(leftYvalue/2);
+            leftBack.setPower(leftYvalue/2);
+            rightFront.setPower(rightYvalue/2);
+            rightBack.setPower(rightYvalue/2);
         }
 
         //for rotating on the spot to the left
         if (leftYvalue < 0 && rightYvalue > 0){
-            leftFront.setPower(leftYvalue);
-            leftBack.setPower(leftYvalue);
-            rightFront.setPower(rightYvalue);
-            rightBack.setPower(rightYvalue);
+            leftFront.setPower(leftYvalue/2);
+            leftBack.setPower(leftYvalue/2);
+            rightFront.setPower(rightYvalue/2);
+            rightBack.setPower(rightYvalue/2);
         }
         //for rotating on the spot to the right
         else if (leftYvalue > 0 && rightYvalue < 0){
-            leftFront.setPower(leftYvalue);
-            leftBack.setPower(leftYvalue);
-            rightFront.setPower(rightYvalue);
-            rightBack.setPower(rightYvalue);
+            leftFront.setPower(leftYvalue/2);
+            leftBack.setPower(leftYvalue/2);
+            rightFront.setPower(rightYvalue/2);
+            rightBack.setPower(rightYvalue/2);
         }
 
         //for turning left while moving forward
@@ -99,43 +99,43 @@ public class FirstTeleOp extends OpMode {
         or short turn
          */
         if (leftYvalue < 0 && rightYvalue > 0 && Math.abs(leftYvalue) < rightYvalue){
-            leftFront.setPower(leftYvalue);
-            leftBack.setPower(leftYvalue);
-            rightFront.setPower(rightYvalue);
-            rightBack.setPower(rightYvalue);
+            leftFront.setPower(leftYvalue/2);
+            leftBack.setPower(leftYvalue/2);
+            rightFront.setPower(rightYvalue/2);
+            rightBack.setPower(rightYvalue/2);
         }
         //for turning right while moving forward
         else if (leftYvalue > 0 && rightYvalue < 0 && leftYvalue > Math.abs(rightYvalue)){
-            leftFront.setPower(leftYvalue);
-            leftBack.setPower(leftYvalue);
-            rightFront.setPower(rightYvalue);
-            rightBack.setPower(rightYvalue);
+            leftFront.setPower(leftYvalue/2);
+            leftBack.setPower(leftYvalue/2);
+            rightFront.setPower(rightYvalue/2);
+            rightBack.setPower(rightYvalue/2);
         }
 
         //for just moving the right drive train forward
         if (rightYvalue > 0){
-            rightFront.setPower(rightYvalue);
-            rightBack.setPower(rightYvalue);
+            rightFront.setPower(rightYvalue/2);
+            rightBack.setPower(rightYvalue/2);
             leftFront.setPower(0);
             leftBack.setPower(0);
         }
         else if (rightYvalue < 0){
-            rightFront.setPower(rightYvalue);
-            rightBack.setPower(rightYvalue);
+            rightFront.setPower(rightYvalue/2);
+            rightBack.setPower(rightYvalue/2);
             leftFront.setPower(0);
             leftBack.setPower(0);
         }
         else if (leftYvalue > 0){
             rightFront.setPower(0);
             rightBack.setPower(0);
-            leftFront.setPower(leftYvalue);
-            leftBack.setPower(leftYvalue);
+            leftFront.setPower(leftYvalue/2);
+            leftBack.setPower(leftYvalue/2);
         }
         else if (leftYvalue < 0){
             rightFront.setPower(0);
             rightBack.setPower(0);
-            leftFront.setPower(leftYvalue);
-            leftBack.setPower(leftYvalue);
+            leftFront.setPower(leftYvalue/2);
+            leftBack.setPower(leftYvalue/2);
         }
 
     }
