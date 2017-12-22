@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.outreach;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.util.Range;
 /**
  * Created by inthe on 11/2/2017.
  */
-@TeleOp (name = "FirstTeleOp0.5Speed2017")
 
 public class FirstTeleOpHalfSpeed extends OpMode {
     public DcMotor leftFront;

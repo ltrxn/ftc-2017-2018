@@ -34,6 +34,15 @@ public class AutonomousR1 extends LinearOpMode {
     static final int DISTANCE_CENTER         = 28;
     static final int DISTANCE_LEFT           = 36;
 
+    //STATES
+    private enum State {
+        STATE_INITIAL,
+        STATE_KNOCK_JEWEL,
+        STATE_DRIVE_TO_CRYPTOBOX,
+        STATE_FACE_CRYPTOBOX,
+        STATE_SCORE,
+        STATE_STOP,
+    }
     @Override
     public void runOpMode() throws InterruptedException {
         //Initialize
@@ -100,6 +109,7 @@ public class AutonomousR1 extends LinearOpMode {
         //find target position
         int newTarget;
         newTarget = robot.leftFront.getCurrentPosition() + (int)(inches * TICKS_PER_INCH);
+
 
         //set target
         robot.leftFront.setTargetPosition(newTarget);

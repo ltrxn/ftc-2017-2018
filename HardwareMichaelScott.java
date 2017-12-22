@@ -26,8 +26,8 @@ public class HardwareMichaelScott {
     public DcMotor rightBack = null;
     //Servos
     public Servo jewelKnockerRight = null;
-    //public Servo glyphClawRight = null;
-    //public Servo glyphClawLeft = null;
+    public Servo glyphClawRight = null;
+    public Servo glyphClawLeft = null;
     //sensors
 
 
@@ -35,15 +35,15 @@ public class HardwareMichaelScott {
     public VuforiaLocalizer vuforia;
     public VuforiaTrackables relicTrackables;
     public VuforiaTrackable relicTemplate;
-    
+
     /******VALUES******/
     //Encoders
     static final int TETRIX_TICK_PER_REV = 1440;
-    static final double ANDYMARK_TICKS_PER_REV  = 1120; //# of ticks per revolution
-    static final double DRIVE_GEAR_REDUCTION    = .5;   //Since gears go from big to small, one rotation of the gear is actually only half a rotation of the wheel
-    static final double WHEEL_DIAMETER_INCHES   =  4;   //Diameter of the wheel
-    static final double TICKS_PER_INCH          = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
-   //Others
+    static final double ANDYMARK_TICKS_PER_REV = 1120; //# of ticks per revolution
+    static final double DRIVE_GEAR_REDUCTION = .5;   //Since gears go from big to small, one rotation of the gear is actually only half a rotation of the wheel
+    static final double WHEEL_DIAMETER_INCHES = 4;   //Diameter of the wheel
+    static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
+    //Others
     private DcMotor.RunMode initialMode = null;
     HardwareMap map = null;
     private ElapsedTime runtime = new ElapsedTime(); // For time out (encoder drive)
@@ -52,6 +52,7 @@ public class HardwareMichaelScott {
     public HardwareMichaelScott(DcMotor.RunMode enteredMode) {
         initialMode = enteredMode;
     }
+
     public HardwareMichaelScott() {
         this(DcMotor.RunMode.RUN_USING_ENCODER);
     }
@@ -67,8 +68,8 @@ public class HardwareMichaelScott {
         rightBack = map.dcMotor.get("rightBack");
         //SERVOS
         jewelKnockerRight = map.servo.get("jewelKnockerRight");
-        //glyphClawLeft = map.servo.get("glyphClawLeft");
-        //glyphClawRight = map.servo.get("glyphClawRight");
+        glyphClawLeft = map.servo.get("glyphClawLeft");
+        glyphClawRight = map.servo.get("glyphClawRight");
         //ENCODERS
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -87,9 +88,11 @@ public class HardwareMichaelScott {
         rightFront.setPower(0);
         leftBack.setPower(0);
         rightBack.setPower(0);
-        jewelKnockerRight.setPosition(0.0);
+        closeClaw();
         raiseJewelKnockerRight();
+
         //VUFORIA SETUP
+        /*
         int cameraMonitorViewId = map.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", map.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = "ASqeker/////AAAAGXyaxZaNe0ngmcBSZn2x/aMgngJtpaXLUuvWMrmqLi768fIwOZ90EwGzH1f8bs6XPrz7WgklDoQCfX9QmfDMh6MxdyzlDpt5KFjmHrHrPgFi+qnZvD9qgfY4gTH8epM5T/tt7BJHwoNC4hjk9+Jf1Ane+XS6AXZrVf04wCynRUzE64zQDgGxflNMl73Q5qSd7BN3OvkAymgrQE4dsg1S97o7sX+obj+ubPZoJ7Hh8KriU6iOHmrVyTx6epZG2lWXDK0Iv6cQjku7Z5hvZNnK9Uvv8TRNIz5R71PBahS0nR4Xn0FH3beyMc+iu6ZNv33ZRuSh9MCPIUlzquqZtvMMPGbg3880nFmLkS9ytLn90kdX";
@@ -98,11 +101,8 @@ public class HardwareMichaelScott {
         relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         relicTemplate = relicTrackables.get(0);
         relicTemplate.setName("relicVuMarkTemplate"); // not necessary
+        */
     }
-
-
-
-
 
 
     /******METHODS******/
@@ -125,17 +125,18 @@ public class HardwareMichaelScott {
 
     //Servos
     public void closeClaw() {
-        //glyphClawLeft.setPosition(.7);
-        //glyphClawRight.setPosition(.2);
+        glyphClawLeft.setPosition(.7);
+        glyphClawRight.setPosition(.35);
     }
+
     public void openClaw() {
-        //glyphClawLeft.setPosition(.1);
-        //glyphClawRight.setPosition(.7);
+        glyphClawLeft.setPosition(.35);
+        glyphClawRight.setPosition(.7);
     }
 
     public void lowerJewelKnockerRight() {
         //lowers jewel knocker right
-        jewelKnockerRight.setPosition(.5);
+        jewelKnockerRight.setPosition(.57);
     }
 
     public void raiseJewelKnockerRight() {
@@ -148,10 +149,20 @@ public class HardwareMichaelScott {
         //decrypts the pictograph, returns position
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         return vuMark;
+    }
 
+    public boolean vuMarkIsVisable() {
+        //returns true of vumark is visable
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     //Encoders
+
     public void resetEncoders() {
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -164,10 +175,17 @@ public class HardwareMichaelScott {
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void setMode(DcMotor.RunMode newMode) {
+        leftFront.setMode(newMode);
+        rightFront.setMode(newMode);
+        leftBack.setMode(newMode);
+        rightBack.setMode(newMode);
+    }
+
     public void encoderDrive(double speed, double inches, double timeoutSeconds) {
         //find target position
         int newTarget;
-        newTarget = leftFront.getCurrentPosition() + (int)(inches * TICKS_PER_INCH);
+        newTarget = leftFront.getCurrentPosition() + (int) (inches * TICKS_PER_INCH);
 
         //set target
         leftFront.setTargetPosition(newTarget);
@@ -188,7 +206,7 @@ public class HardwareMichaelScott {
         driveForward(speed);
 
         //while driving, don't stop
-        while (runtime.seconds()<timeoutSeconds &&
+        while (runtime.seconds() < timeoutSeconds &&
                 (leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy() && rightBack.isBusy())) {
         }
 
@@ -201,4 +219,21 @@ public class HardwareMichaelScott {
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
+    public boolean encodersAtZero() {
+        if (rightFront.getCurrentPosition() == 0 && rightBack.getCurrentPosition() == 0 && leftFront.getCurrentPosition() == 0 && leftBack.getCurrentPosition() == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean jewelKnocerDown() {
+        if (jewelKnockerRight.getPosition() > .3) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
