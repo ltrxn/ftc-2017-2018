@@ -3,17 +3,18 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.teamcode.HardwareMichaelScott;
 
 /**
  * Created by Trxn on 12/17/2017.
  */
 
+@TeleOp(name="clout")
 public class R1State extends LinearOpMode{
     //Robot Hardware
     HardwareMichaelScott robot = new HardwareMichaelScott();
@@ -121,13 +122,14 @@ public class R1State extends LinearOpMode{
                             encoderDrive(.1, 5, -5, 5);
                             encoderDrive(.1, -4, 4, 5);
                         }
-                        newState(State.STATE_KNOCK_JEWEL);
+                        newState(State.STATE_DRIVE_TO_CRYPTOBOX);
                     } else {
                         currentJewelKnockerDown -= .02;
                         trialCounter++;
                     }
                     break;
                 case STATE_DRIVE_TO_CRYPTOBOX:
+                    robot.raiseJewelKnockerRight();
 
             }
             telemetry.update();

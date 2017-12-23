@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Created by Vortex on 12/9/2017.
  */
 @Autonomous(name="R1", group="Michael Scott")
-public class AutonomousR1 extends LinearOpMode {
+public class R1Autonomous extends LinearOpMode {
 
     HardwareMichaelScott robot = new HardwareMichaelScott();
     public ModernRoboticsI2cGyro gyro;

@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="R1/Jewel/SZ", group="testing")
 
-public class R1JewelAndSafeZone extends LinearOpMode {
+public class R1SafeZone extends LinearOpMode {
     //Robot
     HardwareMichaelScott robot = new HardwareMichaelScott();
     ColorSensor sensorColor;
