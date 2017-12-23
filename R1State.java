@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Created by Trxn on 12/17/2017.
  */
 
-@TeleOp(name="clout")
-public class R1State extends LinearOpMode{
+@TeleOp(name = "clout")
+public class R1State extends LinearOpMode {
     //Robot Hardware
     HardwareMichaelScott robot = new HardwareMichaelScott();
     ColorSensor sensorColor;
@@ -41,25 +41,24 @@ public class R1State extends LinearOpMode{
 
     private int trialCounter = 0;
 
-
-
     //Vumark
     RelicRecoveryVuMark vuMark; //what column to score in
 
-    //Variables
-    static final double ANDYMARK_TICKS_PER_REV  = 1120; //# of ticks per revolution
-    static final double DRIVE_GEAR_REDUCTION    = .5;   //Since gears go from big to small, one rotation of the gear is actually only half a rotation of the wheel
-    static final double WHEEL_DIAMETER_INCHES   =  4;   //Diameter of the wheel
-    static final double TICKS_PER_INCH          = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
+    //Encoders
+    static final double ANDYMARK_TICKS_PER_REV = 1120; //# of ticks per revolution
+    static final double DRIVE_GEAR_REDUCTION = .5;   //Since gears go from big to small, one rotation of the gear is actually only half a rotation of the wheel
+    static final double WHEEL_DIAMETER_INCHES = 4;   //Diameter of the wheel
+    static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
 
-    static final double DRIVE_SPEED = 0.6; //Speed while going to crytobox
-    static final double GYRO_TURN_SPEED         = 0.5; //Speed while turning
+    static final double DRIVE_SPEED = .2; //Speed while going to crytobox
+    static final double GYRO_TURN_SPEED = 0.5; //Speed while turning
 
-    static final int THRESHOLD                  = 2; //tolerance when turning
+    static final int THRESHOLD = 2; //tolerance when turning
 
-    static final int DISTANCE_RIGHT          = 20; //Distance from balancing stone to crytobox positions
-    static final int DISTANCE_CENTER         = 28;
-    static final int DISTANCE_LEFT           = 36;
+    static final int DISTANCE_RIGHT = 20; //Distance from balancing stone to crytobox positions
+    static final int DISTANCE_CENTER = 28;
+    static final int DISTANCE_LEFT = 36;
+    static final int DRIVE_TIME_OUT = 10;
 
     //Color Sensors
     float hsvValues[] = {0F, 0F, 0F}; //holds hue, saturation, and value information
@@ -94,17 +93,23 @@ public class R1State extends LinearOpMode{
             //first line of telemetry, runt time and current state time
             telemetry.addData("Time", String.format("%4.f", stateTime.time()) + currentState.toString());
 
+
             switch (currentState) {
                 case STATE_INITIAL:
-                    if (robot.encodersAtZero() || trialCounter > 3) {
+                    if (robot.vuMarkIsVisable() || trialCounter > 3) {
+                        telemetry.addData("VuMark", "%s visible", vuMark);
+                        vuMark = robot.getVuMark();
+                        sleep(500);
                         newState(State.STATE_KNOCK_JEWEL);
                     } else {
+                        telemetry.addData("VuMark", "Is not visable");
                         trialCounter++;
                     }
                     break;
+
                 case STATE_KNOCK_JEWEL:
                     robot.jewelKnockerRight.setPosition(currentJewelKnockerDown);
-
+                    sleep(1000);
                     redSensor = sensorColor.red();
                     blueSensor = sensorColor.blue();
 
@@ -114,7 +119,7 @@ public class R1State extends LinearOpMode{
                             hsvValues);
 
                     sleep(1000);
-                    if (blueSensor > 20 || redSensor > 20 ) {
+                    if (blueSensor > 20 || redSensor > 20) {
                         if (redSensor > blueSensor) {
                             encoderDrive(.06, -5, 5, 5);
                             encoderDrive(.06, 4, -4, 5);
@@ -130,15 +135,30 @@ public class R1State extends LinearOpMode{
                     break;
                 case STATE_DRIVE_TO_CRYPTOBOX:
                     robot.raiseJewelKnockerRight();
+                    if (robot.jewelKnockerRight.getPosition() < .3) {
+                        if (vuMark == RelicRecoveryVuMark.LEFT) {
+                            encoderDrive(DISTANCE_LEFT, DISTANCE_LEFT, DRIVE_SPEED, DRIVE_TIME_OUT);
+                        } else if (vuMark == RelicRecoveryVuMark.CENTER) {
+                            encoderDrive(DISTANCE_CENTER, DISTANCE_CENTER, DRIVE_SPEED, DRIVE_TIME_OUT);
 
+                        } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                            encoderDrive(DISTANCE_RIGHT, DISTANCE_RIGHT, DRIVE_SPEED, DRIVE_TIME_OUT);
+                        } else {
+                            encoderDrive(DISTANCE_CENTER, DISTANCE_CENTER, DRIVE_SPEED, DRIVE_TIME_OUT);
+                        }
+                        newState(State.STATE_FACE_CRYPTOBOX);
+
+                    } else {
+                        robot.raiseJewelKnockerRight();
+                        trialCounter++;
+                    }
+                    break;
             }
             telemetry.update();
         }
 
 
-
     }
-
 
 
     //Sets a new state and resets state clock
