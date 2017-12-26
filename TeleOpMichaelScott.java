@@ -18,7 +18,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 public class TeleOpMichaelScott extends LinearOpMode {
 
     HardwareMichaelScott robot = new HardwareMichaelScott();
-    DcMotor pulley;
 
 
     /******VALUES******/
@@ -48,10 +47,6 @@ public class TeleOpMichaelScott extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         robot.init(hardwareMap);
-
-        pulley = hardwareMap.dcMotor.get("glyphPulley");
-        pulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        pulley.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         jewelKnockerCounter = 1;
         //telemetry.addData(">", "초기화가 완료되었습니다 (Initialization is finished)");
@@ -96,14 +91,10 @@ public class TeleOpMichaelScott extends LinearOpMode {
             robot.rightFront.setPower(v2);
             robot.rightBack.setPower(v4);
 
-            //Gamepad 2 - Left Joystick - moves pulley fast
-            float pulleyPowerLeft = -gamepad2.left_stick_y;
-            pulley.setPower(pulleyPowerLeft);
-
             //Gamepad 2 - Right Joystick - moves pulley slow
             float pulleyPowerRight = -gamepad2.right_stick_y;
             pulleyPowerRight *= .3;
-            pulley.setPower(pulleyPowerRight);
+            robot.pulley.setPower(pulleyPowerRight);
 
 
             //Gamepad 1 - Right Trigger - Robot turns clockwise
@@ -179,7 +170,7 @@ public class TeleOpMichaelScott extends LinearOpMode {
             telemetry.addData("Encoder rightBack", robot.rightBack.getCurrentPosition());
             telemetry.addData("Encoder leftFront", robot.leftFront.getCurrentPosition());
             telemetry.addData("Encoder leftBack", robot.leftBack.getCurrentPosition());
-            telemetry.addData("Encoder pulley", pulley.getCurrentPosition());
+            telemetry.addData("Encoder pulley", robot.pulley.getCurrentPosition());
             telemetry.update();
             idle();
 

@@ -37,9 +37,9 @@ public class R1State extends LinearOpMode {
 
 
     private State currentState; //current state machine state
-    private double currentJewelKnockerDown = .57;
+    private double currentJewelKnockerDown = .57; //what to set down jewel knocker position as
 
-    private int trialCounter = 0;
+    private int trialCounter = 0; //# of times tried before continuing
 
     //Vumark
     RelicRecoveryVuMark vuMark; //what column to score in
@@ -58,6 +58,7 @@ public class R1State extends LinearOpMode {
     static final int DISTANCE_RIGHT = 20; //Distance from balancing stone to crytobox positions
     static final int DISTANCE_CENTER = 28;
     static final int DISTANCE_LEFT = 36;
+    static final int DISTANCE_TO_CRYPTOBOX = 9; //Distance to push block to cryptobox.
     static final int DRIVE_TIME_OUT = 10;
 
     //Color Sensors
@@ -85,8 +86,8 @@ public class R1State extends LinearOpMode {
 
         runTime.reset(); //zero game clock
 
-        newState(State.STATE_INITIAL);
-        robot.relicTrackables.activate();
+        newState(State.STATE_INITIAL); //set currentState to initial
+        robot.relicTrackables.activate(); //activate vuforia
 
         //Start loop
         while (opModeIsActive()) {
@@ -95,69 +96,140 @@ public class R1State extends LinearOpMode {
 
 
             switch (currentState) {
-                case STATE_INITIAL:
+                case STATE_INITIAL: //Remember VuMark and pickup glyph
+
                     if (robot.vuMarkIsVisable() || trialCounter > 3) {
                         telemetry.addData("VuMark", "%s visible", vuMark);
                         vuMark = robot.getVuMark();
+
+                        robot.closeClaw();
                         sleep(500);
+                        robot.pulley.setPower(.3);
+                        sleep(1500);
+                        robot.pulley.setPower(0);
+
                         newState(State.STATE_KNOCK_JEWEL);
+
                     } else {
+
                         telemetry.addData("VuMark", "Is not visable");
                         trialCounter++;
+
                     }
                     break;
 
-                case STATE_KNOCK_JEWEL:
-                    robot.jewelKnockerRight.setPosition(currentJewelKnockerDown);
-                    sleep(1000);
-                    redSensor = sensorColor.red();
-                    blueSensor = sensorColor.blue();
 
-                    Color.RGBToHSV((int) (sensorColor.red() * SCALE_FACTOR),
+                case STATE_KNOCK_JEWEL: //knock off the blue jewel
+
+                    robot.jewelKnockerRight.setPosition(currentJewelKnockerDown); //lower jewel knocker
+                    sleep(1000);
+
+                    redSensor = sensorColor.red(); //remember red value
+                    blueSensor = sensorColor.blue(); //remember blue value
+                    Color.RGBToHSV((int) (sensorColor.red() * SCALE_FACTOR), //remember other values
                             (int) (sensorColor.green() * SCALE_FACTOR),
                             (int) (sensorColor.blue() * SCALE_FACTOR),
                             hsvValues);
 
                     sleep(1000);
-                    if (blueSensor > 20 || redSensor > 20) {
-                        if (redSensor > blueSensor) {
-                            encoderDrive(.06, -5, 5, 5);
-                            encoderDrive(.06, 4, -4, 5);
-                        } else {
-                            encoderDrive(.1, 5, -5, 5);
-                            encoderDrive(.1, -4, 4, 5);
+
+                    if (blueSensor > 20 || redSensor > 20 || trialCounter > 3) { //if there is a strong blue/red return...
+
+                        if (redSensor > blueSensor) { //if ball is red...
+                            encoderDrive(.06, -5, 5, 5); //turn left
+                            encoderDrive(.06, 4, -4, 5); //turn right
+                        } else { //if ball is blue...
+                            encoderDrive(.1, 5, -5, 5); //turn right
+                            encoderDrive(.1, -4, 4, 5); //turn left
                         }
+
                         newState(State.STATE_DRIVE_TO_CRYPTOBOX);
+
                     } else {
-                        currentJewelKnockerDown -= .02;
+
+                        currentJewelKnockerDown -= .02; //raise it up a bit
                         trialCounter++;
+
                     }
                     break;
-                case STATE_DRIVE_TO_CRYPTOBOX:
-                    robot.raiseJewelKnockerRight();
-                    if (robot.jewelKnockerRight.getPosition() < .3) {
-                        if (vuMark == RelicRecoveryVuMark.LEFT) {
-                            encoderDrive(DISTANCE_LEFT, DISTANCE_LEFT, DRIVE_SPEED, DRIVE_TIME_OUT);
-                        } else if (vuMark == RelicRecoveryVuMark.CENTER) {
-                            encoderDrive(DISTANCE_CENTER, DISTANCE_CENTER, DRIVE_SPEED, DRIVE_TIME_OUT);
 
-                        } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                            encoderDrive(DISTANCE_RIGHT, DISTANCE_RIGHT, DRIVE_SPEED, DRIVE_TIME_OUT);
-                        } else {
-                            encoderDrive(DISTANCE_CENTER, DISTANCE_CENTER, DRIVE_SPEED, DRIVE_TIME_OUT);
+                case STATE_DRIVE_TO_CRYPTOBOX: //drive till the cryptobox (according to vuforia)
+
+                    robot.raiseJewelKnockerRight(); //lift up jewel knocker
+
+                    if (robot.jewelKnockerRight.getPosition() < .3 || trialCounter > 3) { //if the jewel knocker is up...
+
+                        if (vuMark == RelicRecoveryVuMark.LEFT) { //vuMark left
+                            encoderDrive(DRIVE_SPEED, DISTANCE_LEFT, DISTANCE_LEFT, DRIVE_TIME_OUT);
+                        } else if (vuMark == RelicRecoveryVuMark.CENTER) { //vuMark center
+                            encoderDrive(DRIVE_SPEED, DISTANCE_CENTER, DISTANCE_CENTER, DRIVE_TIME_OUT);
+                        } else if (vuMark == RelicRecoveryVuMark.RIGHT) { //vuMark righht
+                            encoderDrive(DRIVE_SPEED, DISTANCE_RIGHT, DISTANCE_RIGHT, DRIVE_TIME_OUT);
+                        } else { //go center if vuMark is unknown
+                            encoderDrive(DRIVE_SPEED, DISTANCE_CENTER, DISTANCE_CENTER, DRIVE_TIME_OUT);
                         }
+
                         newState(State.STATE_FACE_CRYPTOBOX);
 
                     } else {
                         robot.raiseJewelKnockerRight();
                         trialCounter++;
                     }
+
+                    break;
+
+                case STATE_FACE_CRYPTOBOX: //turn towards the cryptobox
+
+                    if (robot.rightFront.getPower() == 0 || trialCounter > 3) { //make sure robot is not moving
+                        encoderDrive(DRIVE_SPEED, 12, -12, DRIVE_TIME_OUT);
+
+                        newState(State.STATE_SCORE);
+
+                    } else {
+                        trialCounter++;
+                        robot.stopDriving(); //stop the driving
+                        telemetry.addData("Motor", "is still driving");
+                    }
+
+                    break;
+
+                case STATE_SCORE: //drive up to the cryptobox and release the glyph
+
+                    if (robot.rightFront.getPower() == 0 || trialCounter > 3) { //make sure robot is not moving
+
+                        encoderDrive(DRIVE_SPEED, DISTANCE_TO_CRYPTOBOX, DISTANCE_TO_CRYPTOBOX, DRIVE_TIME_OUT);
+
+                        robot.pulley.setPower(-.3); //lower the pulley
+                        sleep(1000);
+                        robot.pulley.setPower(0);
+                        robot.openClaw(); //open glyph claw
+
+                        newState(State.STATE_STOP);
+
+                    } else {
+                        trialCounter++;
+                        robot.stopDriving(); //stop the driving
+                        telemetry.addData("Motor", "is still driving");
+                    }
+
+                    break;
+
+                case STATE_STOP: //do nothing
+
+                    if(robot.rightFront.getPower()==0 || trialCounter > 3) { //make sure robot is not moving
+                        telemetry.addData("AUTONOMOUS", "COMPLETE");
+
+                    } else {
+                        trialCounter++;
+                        robot.stopDriving(); //stop the driving
+
+                        telemetry.addData("Motor", "is still driving");
+                    }
                     break;
             }
-            telemetry.update();
+
+            telemetry.update(); //Update Telemetry
         }
-
-
     }
 
 
@@ -168,6 +240,7 @@ public class R1State extends LinearOpMode {
         trialCounter = 0;
     }
 
+    //Drives forward using encoders
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
@@ -199,12 +272,7 @@ public class R1State extends LinearOpMode {
             encoderTime.reset();
             robot.driveForward(Math.abs(speed));
 
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            // wait for motors to not be busy
             while (opModeIsActive() &&
                     (encoderTime.seconds() < timeoutS) &&
                     (robot.leftFront.isBusy() && robot.leftBack.isBusy() && robot.rightFront.isBusy() && robot.rightBack.isBusy())) {
@@ -225,7 +293,7 @@ public class R1State extends LinearOpMode {
             // Turn off RUN_TO_POSITION
             robot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            //  sleep(250);   // optional pause after each move
+            sleep(100);   // optional pause after each move
         }
     }
 }
