@@ -57,6 +57,7 @@ public class TeleOpMichaelScott extends LinearOpMode {
 
 
         while (opModeIsActive()) {
+
             //Gamepad 1 - Left Joystick - Strafes robot
             double r = Math.hypot(-gamepad1.left_stick_x, -gamepad1.left_stick_y);
             double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 3.5;
@@ -74,28 +75,20 @@ public class TeleOpMichaelScott extends LinearOpMode {
             robot.rightBack.setPower(v4);
 
 
-
+            //Gamepad 2 - Left and Right Triggers = precise movement
             while (gamepad2.left_trigger>0) {
                 robot.leftFront.setPower(.1);
                 robot.leftBack.setPower(.1);
-
-
             }
-
             while (gamepad2.right_trigger>0) {
                 robot.rightFront.setPower(.1);
                 robot.rightBack.setPower(.1);
-
             }
 
-            robot.rightFront.setPower(v2);
-            robot.rightBack.setPower(v4);
-
-            //Gamepad 2 - Right Joystick - moves pulley slow
+            //Gamepad 2 - Right Joystick - moves pulley
             float pulleyPowerRight = -gamepad2.right_stick_y;
             pulleyPowerRight *= .3;
             robot.pulley.setPower(pulleyPowerRight);
-
 
             //Gamepad 1 - Right Trigger - Robot turns clockwise
             while (gamepad1.right_trigger > 0) {
@@ -120,13 +113,11 @@ public class TeleOpMichaelScott extends LinearOpMode {
                 currentRight = rightGlyphClawOpen;
                 currentLeft = leftGlyphClawOpen;
             }
-
             //Gamepad 1/2 - Left Bumper - Claws closes
             if (gamepad1.right_bumper || gamepad2.right_bumper) {
                 currentRight = rightGlyphClawClose;
                 currentLeft = leftGlyphClawClose;
             }
-
             robot.glyphClawRight.setPosition(currentRight);
             robot.glyphClawLeft.setPosition(currentLeft);
 
@@ -173,8 +164,6 @@ public class TeleOpMichaelScott extends LinearOpMode {
             telemetry.addData("Encoder pulley", robot.pulley.getCurrentPosition());
             telemetry.update();
             idle();
-
-
         }
     }
 
