@@ -58,10 +58,10 @@ public class R1State extends LinearOpMode {
 
     private static final int THRESHOLD = 2; //tolerance when turning
 
-    private static final int DISTANCE_RIGHT = 40; //Distance from balancing stone to crytobox positions
-    private static final int DISTANCE_CENTER = 32;
-    private static final int DISTANCE_LEFT = 24;
-    private static final int DISTANCE_TO_CRYPTOBOX = 19; //Distance to push block to cryptobox.
+    private static final int DISTANCE_RIGHT = 20; //Distance from balancing stone to crytobox positions
+    private static final int DISTANCE_CENTER = 26;
+    private static final int DISTANCE_LEFT = 31;
+    private static final int DISTANCE_TO_CRYPTOBOX = 6; //Distance to push block to cryptobox.
     private static final int DRIVE_TIME_OUT = 10;
 
     //Color Sensors
@@ -95,8 +95,7 @@ public class R1State extends LinearOpMode {
         //Start loop
         while (opModeIsActive()) {
             //first line of telemetry, runt time and current state time
-            telemetry.addData("Time", "%4f" + currentState.toString(), stateTime.time());
-            telemetry.addData("Pictograph", vuMark);
+
 
             switch (currentState) {
                 case STATE_INITIAL: //Remember VuMark and pickup glyph
@@ -108,7 +107,7 @@ public class R1State extends LinearOpMode {
                         robot.closeClaw();
                         sleep(500);
                         robot.pulley.setPower(.3);
-                        sleep(1000);
+                        sleep(500);
                         robot.pulley.setPower(0);
 
                         newState(State.STATE_KNOCK_JEWEL);
@@ -140,11 +139,11 @@ public class R1State extends LinearOpMode {
                     if (blueSensor > 20 || redSensor > 20 || trialCounter > 3) { //if there is a strong blue/red return...
 
                         if (redSensor > blueSensor) { //if ball is red...
-                            encoderDrive(.06, -5, 5, 5); //turn left
-                            encoderDrive(.06, 5, -5, 5); //turn right
+                            encoderDrive(.06, -3, 3, 5); //turn left
+                            encoderDrive(.06, 3, -3, 5); //turn right
                         } else { //if ball is blue...
-                            encoderDrive(.1, 5, -5, 5); //turn right
-                            encoderDrive(.1, -5, 5, 5); //turn left
+                            encoderDrive(.1, 3, -3, 5); //turn right
+                            encoderDrive(.1, -3, 3, 5); //turn left
                         }
 
                         newState(State.STATE_DRIVE_TO_CRYPTOBOX);
@@ -185,10 +184,9 @@ public class R1State extends LinearOpMode {
                 case STATE_FACE_CRYPTOBOX: //turn towards the cryptobox
 
                     if (robot.rightFront.getPower() == 0 || trialCounter > 3) { //make sure robot is not moving
-                        encoderDrive(DRIVE_SPEED, 18, -18, DRIVE_TIME_OUT);
 
+                        encoderDrive(DRIVE_SPEED, 15, -16, DRIVE_TIME_OUT);
                         newState(State.STATE_SCORE);
-
                     } else {
                         trialCounter++;
                         robot.stopDriving(); //stop the driving
@@ -197,8 +195,28 @@ public class R1State extends LinearOpMode {
 
                     break;
 
-                case STATE_SCORE: //drive up to the cryptobox and release the glyph
+                case STATE_SCORE: //turn towards the cryptobox
 
+                    if (robot.rightFront.getPower() == 0 || trialCounter > 3) { //make sure robot is not moving
+
+                        encoderDrive(DRIVE_SPEED, DISTANCE_TO_CRYPTOBOX, DISTANCE_TO_CRYPTOBOX, DRIVE_TIME_OUT);
+                        robot.pulley.setPower(-.3);
+                        sleep(200);
+                        robot.pulley.setPower(0);
+                        sleep(1400);
+
+                        robot.openClaw(); //open glyph claw
+                        sleep(1400);
+                        encoderDrive(DRIVE_SPEED, -3, -3, DRIVE_TIME_OUT);
+                        newState(State.STATE_STOP);
+                    } else {
+                        trialCounter++;
+                        robot.stopDriving(); //stop the driving
+                        telemetry.addData("Motor", "is still driving");
+                    }
+
+                    break;
+/*                case STATE_SCORE: //drive up to the cryptobox and release the glyph
                     if (robot.rightFront.getPower() == 0 || trialCounter > 3) { //make sure robot is not moving
 
                         encoderDrive(DRIVE_SPEED, DISTANCE_TO_CRYPTOBOX, DISTANCE_TO_CRYPTOBOX, DRIVE_TIME_OUT);
@@ -217,22 +235,18 @@ public class R1State extends LinearOpMode {
                     }
 
                     break;
-
+*/
                 case STATE_STOP: //do nothing
 
-                    if(robot.rightFront.getPower()==0 || trialCounter > 3) { //make sure robot is not moving
-                        telemetry.addData("AUTONOMOUS", "COMPLETE");
-
-                    } else {
-                        trialCounter++;
-                        robot.stopDriving(); //stop the driving
-
-                        telemetry.addData("Motor", "is still driving");
-                    }
                     break;
             }
-            sleep(3000);
+            telemetry.addData("Time", "%2f  " + currentState.toString(), stateTime.time());
+            telemetry.addData("Pictograph", "%s", vuMark);
+            telemetry.addData("Trial Counter", trialCounter);
             telemetry.update(); //Update Telemetry
+
+            sleep(1000);
+
         }
     }
 
@@ -288,7 +302,6 @@ public class R1State extends LinearOpMode {
                         robot.leftBack.getCurrentPosition(),
                         robot.rightFront.getCurrentPosition(),
                         robot.rightBack.getCurrentPosition());
-                telemetry.update();
             }
 
             // Stop all motion;
