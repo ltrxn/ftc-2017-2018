@@ -18,8 +18,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 @Autonomous(name = "clout", group = "state")
 public class R1State extends LinearOpMode {
     //Robot Hardware
-    HardwareMichaelScott robot = new HardwareMichaelScott();
-    ColorSensor sensorColor;
+    private HardwareMichaelScott robot = new HardwareMichaelScott();
+    private ColorSensor sensorColor;
 
     //States
     private enum State {
@@ -32,8 +32,8 @@ public class R1State extends LinearOpMode {
     }
 
     //Loop cycle time stats variables
-    public ElapsedTime runTime = new ElapsedTime(); //time into round
-    public ElapsedTime stateTime = new ElapsedTime(); //time into current state
+    private ElapsedTime runTime = new ElapsedTime(); //time into round
+    private ElapsedTime stateTime = new ElapsedTime(); //time into current state
     private ElapsedTime encoderTime = new ElapsedTime();
 
 
@@ -43,31 +43,31 @@ public class R1State extends LinearOpMode {
     private int trialCounter = 0; //# of times tried before continuing
 
     //Vumark
-    RelicRecoveryVuMark vuMark; //what column to score in
+    private RelicRecoveryVuMark vuMark; //what column to score in
 
     //Encoders
-    static final double ANDYMARK_TICKS_PER_REV = 1120; //# of ticks per revolution
-    static final double DRIVE_GEAR_REDUCTION = .5;   //Since gears go from big to small, one rotation of the gear is actually only half a rotation of the wheel
-    static final double WHEEL_DIAMETER_INCHES = 4;   //Diameter of the wheel
-    static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
+    private static final double ANDYMARK_TICKS_PER_REV = 1120; //# of ticks per revolution
+    private static final double DRIVE_GEAR_REDUCTION = .5;   //Since gears go from big to small, one rotation of the gear is actually only half a rotation of the wheel
+    private static final double WHEEL_DIAMETER_INCHES = 4;   //Diameter of the wheel
+    private static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
 
-    static final double DRIVE_SPEED = .2; //Speed while going to crytobox
-    static final double GYRO_TURN_SPEED = 0.5; //Speed while turning
+    private static final double DRIVE_SPEED = .2; //Speed while going to crytobox
+    private static final double GYRO_TURN_SPEED = 0.5; //Speed while turning
 
-    static final int THRESHOLD = 2; //tolerance when turning
+    private static final int THRESHOLD = 2; //tolerance when turning
 
-    static final int DISTANCE_RIGHT = 20; //Distance from balancing stone to crytobox positions
-    static final int DISTANCE_CENTER = 28;
-    static final int DISTANCE_LEFT = 36;
-    static final int DISTANCE_TO_CRYPTOBOX = 9; //Distance to push block to cryptobox.
-    static final int DRIVE_TIME_OUT = 10;
+    private static final int DISTANCE_RIGHT = 20; //Distance from balancing stone to crytobox positions
+    private static final int DISTANCE_CENTER = 28;
+    private static final int DISTANCE_LEFT = 36;
+    private static final int DISTANCE_TO_CRYPTOBOX = 9; //Distance to push block to cryptobox.
+    private static final int DRIVE_TIME_OUT = 10;
 
     //Color Sensors
-    float hsvValues[] = {0F, 0F, 0F}; //holds hue, saturation, and value information
-    final float values[] = hsvValues; //reference to ^^
-    final double SCALE_FACTOR = 255; //amplify the difference
-    int redSensor;
-    int blueSensor;
+    private float hsvValues[] = {0F, 0F, 0F}; //holds hue, saturation, and value information
+    private final float values[] = hsvValues; //reference to ^^
+    private final double SCALE_FACTOR = 255; //amplify the difference
+    private int redSensor;
+    private int blueSensor;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -93,7 +93,7 @@ public class R1State extends LinearOpMode {
         //Start loop
         while (opModeIsActive()) {
             //first line of telemetry, runt time and current state time
-            telemetry.addData("Time", String.format("%4.f", stateTime.time()) + currentState.toString());
+            telemetry.addData("Time", "%4d" + currentState.toString(), stateTime.time());
             telemetry.addData("Pictograph", vuMark);
 
             switch (currentState) {
@@ -113,7 +113,7 @@ public class R1State extends LinearOpMode {
 
                     } else {
 
-                        telemetry.addData("VuMark", "Is not visable");
+                        telemetry.addData("VuMark", "Is not visible");
                         trialCounter++;
 
                     }
@@ -242,9 +242,9 @@ public class R1State extends LinearOpMode {
     }
 
     //Drives forward using encoders
-    public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
+    private void encoderDrive(double speed,
+                              double leftInches, double rightInches,
+                              double timeoutS) {
         int newLeftFrontTarget;
         int newLeftBackTarget;
         int newRightFrontTarget;
