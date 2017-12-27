@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Color;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -14,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Created by Trxn on 12/17/2017.
  */
 
-@TeleOp(name = "clout", group = "state")
+@Autonomous(name = "clout", group = "state")
 public class R1State extends LinearOpMode {
     //Robot Hardware
     HardwareMichaelScott robot = new HardwareMichaelScott();
@@ -93,7 +94,7 @@ public class R1State extends LinearOpMode {
         while (opModeIsActive()) {
             //first line of telemetry, runt time and current state time
             telemetry.addData("Time", String.format("%4.f", stateTime.time()) + currentState.toString());
-
+            telemetry.addData("Pictograph", vuMark);
 
             switch (currentState) {
                 case STATE_INITIAL: //Remember VuMark and pickup glyph
