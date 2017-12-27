@@ -37,6 +37,7 @@ public class R1State extends LinearOpMode {
     private ElapsedTime encoderTime = new ElapsedTime();
 
 
+
     private State currentState; //current state machine state
     private double currentJewelKnockerDown = .57; //what to set down jewel knocker position as
 
@@ -49,17 +50,18 @@ public class R1State extends LinearOpMode {
     private static final double ANDYMARK_TICKS_PER_REV = 1120; //# of ticks per revolution
     private static final double DRIVE_GEAR_REDUCTION = .5;   //Since gears go from big to small, one rotation of the gear is actually only half a rotation of the wheel
     private static final double WHEEL_DIAMETER_INCHES = 4;   //Diameter of the wheel
-    private static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
+    //private static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
+    private static final double TICKS_PER_INCH = 120; //# of ticks to be rotated to drive an inch
 
     private static final double DRIVE_SPEED = .2; //Speed while going to crytobox
     private static final double GYRO_TURN_SPEED = 0.5; //Speed while turning
 
     private static final int THRESHOLD = 2; //tolerance when turning
 
-    private static final int DISTANCE_RIGHT = 20; //Distance from balancing stone to crytobox positions
-    private static final int DISTANCE_CENTER = 28;
-    private static final int DISTANCE_LEFT = 36;
-    private static final int DISTANCE_TO_CRYPTOBOX = 9; //Distance to push block to cryptobox.
+    private static final int DISTANCE_RIGHT = 40; //Distance from balancing stone to crytobox positions
+    private static final int DISTANCE_CENTER = 32;
+    private static final int DISTANCE_LEFT = 24;
+    private static final int DISTANCE_TO_CRYPTOBOX = 19; //Distance to push block to cryptobox.
     private static final int DRIVE_TIME_OUT = 10;
 
     //Color Sensors
@@ -93,7 +95,7 @@ public class R1State extends LinearOpMode {
         //Start loop
         while (opModeIsActive()) {
             //first line of telemetry, runt time and current state time
-            telemetry.addData("Time", "%4d" + currentState.toString(), stateTime.time());
+            telemetry.addData("Time", "%4f" + currentState.toString(), stateTime.time());
             telemetry.addData("Pictograph", vuMark);
 
             switch (currentState) {
@@ -106,7 +108,7 @@ public class R1State extends LinearOpMode {
                         robot.closeClaw();
                         sleep(500);
                         robot.pulley.setPower(.3);
-                        sleep(1500);
+                        sleep(1000);
                         robot.pulley.setPower(0);
 
                         newState(State.STATE_KNOCK_JEWEL);
@@ -121,6 +123,7 @@ public class R1State extends LinearOpMode {
 
 
                 case STATE_KNOCK_JEWEL: //knock off the blue jewel
+                    vuMark = robot.getVuMark(); //get vumark again
 
                     robot.jewelKnockerRight.setPosition(currentJewelKnockerDown); //lower jewel knocker
                     sleep(1000);
@@ -138,10 +141,10 @@ public class R1State extends LinearOpMode {
 
                         if (redSensor > blueSensor) { //if ball is red...
                             encoderDrive(.06, -5, 5, 5); //turn left
-                            encoderDrive(.06, 4, -4, 5); //turn right
+                            encoderDrive(.06, 5, -5, 5); //turn right
                         } else { //if ball is blue...
                             encoderDrive(.1, 5, -5, 5); //turn right
-                            encoderDrive(.1, -4, 4, 5); //turn left
+                            encoderDrive(.1, -5, 5, 5); //turn left
                         }
 
                         newState(State.STATE_DRIVE_TO_CRYPTOBOX);
@@ -182,7 +185,7 @@ public class R1State extends LinearOpMode {
                 case STATE_FACE_CRYPTOBOX: //turn towards the cryptobox
 
                     if (robot.rightFront.getPower() == 0 || trialCounter > 3) { //make sure robot is not moving
-                        encoderDrive(DRIVE_SPEED, 12, -12, DRIVE_TIME_OUT);
+                        encoderDrive(DRIVE_SPEED, 18, -18, DRIVE_TIME_OUT);
 
                         newState(State.STATE_SCORE);
 
@@ -201,7 +204,7 @@ public class R1State extends LinearOpMode {
                         encoderDrive(DRIVE_SPEED, DISTANCE_TO_CRYPTOBOX, DISTANCE_TO_CRYPTOBOX, DRIVE_TIME_OUT);
 
                         robot.pulley.setPower(-.3); //lower the pulley
-                        sleep(1000);
+                        sleep(300);
                         robot.pulley.setPower(0);
                         robot.openClaw(); //open glyph claw
 
@@ -228,7 +231,7 @@ public class R1State extends LinearOpMode {
                     }
                     break;
             }
-
+            sleep(3000);
             telemetry.update(); //Update Telemetry
         }
     }
