@@ -1,20 +1,23 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.unofficial;
 
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.HardwareMichaelScott;
+
 /**
  * Created by Trxn on 12/18/2017.
  */
 
 @Autonomous(name="R1/Jewel/SZ", group="testing")
-
+@Disabled
 public class R1SafeZone extends LinearOpMode {
     //Robot
     HardwareMichaelScott robot = new HardwareMichaelScott();

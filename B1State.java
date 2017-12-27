@@ -4,7 +4,6 @@ import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -15,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Created by Trxn on 12/17/2017.
  */
 
-@Autonomous(name = "clout R1", group = "state")
-public class R1State extends LinearOpMode {
+@Autonomous(name = "clout B1", group = "state")
+public class B1State extends LinearOpMode {
     //Robot Hardware
     private HardwareMichaelScott robot = new HardwareMichaelScott();
     private ColorSensor sensorColor;
@@ -163,13 +162,13 @@ public class R1State extends LinearOpMode {
                     if (robot.jewelKnockerRight.getPosition() < .3 || trialCounter > 3) { //if the jewel knocker is up...
 
                         if (vuMark == RelicRecoveryVuMark.LEFT) { //vuMark left
-                            encoderDrive(DRIVE_SPEED, DISTANCE_LEFT, DISTANCE_LEFT, DRIVE_TIME_OUT);
+                            encoderDrive(DRIVE_SPEED, -DISTANCE_LEFT, -DISTANCE_LEFT, DRIVE_TIME_OUT);
                         } else if (vuMark == RelicRecoveryVuMark.CENTER) { //vuMark center
-                            encoderDrive(DRIVE_SPEED, DISTANCE_CENTER, DISTANCE_CENTER, DRIVE_TIME_OUT);
+                            encoderDrive(DRIVE_SPEED, -DISTANCE_CENTER, -DISTANCE_CENTER, DRIVE_TIME_OUT);
                         } else if (vuMark == RelicRecoveryVuMark.RIGHT) { //vuMark righht
-                            encoderDrive(DRIVE_SPEED, DISTANCE_RIGHT, DISTANCE_RIGHT, DRIVE_TIME_OUT);
+                            encoderDrive(DRIVE_SPEED, -DISTANCE_RIGHT, -DISTANCE_RIGHT, DRIVE_TIME_OUT);
                         } else { //go center if vuMark is unknown
-                            encoderDrive(DRIVE_SPEED, DISTANCE_CENTER, DISTANCE_CENTER, DRIVE_TIME_OUT);
+                            encoderDrive(DRIVE_SPEED, -DISTANCE_CENTER, -DISTANCE_CENTER, DRIVE_TIME_OUT);
                         }
 
                         newState(State.STATE_FACE_CRYPTOBOX);

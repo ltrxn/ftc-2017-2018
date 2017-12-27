@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.unofficial;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.HardwareMichaelScott;
  */
 
 @TeleOp (name="Encoder Values Testing")
+@Disabled
 public class EncoderTesting extends LinearOpMode {
     //Robot Hardware
     private HardwareMichaelScott robot = new HardwareMichaelScott();
