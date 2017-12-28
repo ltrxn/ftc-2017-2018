@@ -14,7 +14,6 @@ import org.firstinspires.ftc.teamcode.HardwareMichaelScott;
  */
 
 @TeleOp (name="Encoder Values Testing")
-@Disabled
 public class EncoderTesting extends LinearOpMode {
     //Robot Hardware
     private HardwareMichaelScott robot = new HardwareMichaelScott();
@@ -43,15 +42,38 @@ public class EncoderTesting extends LinearOpMode {
             telemetry.addData("Ticks Per Inch", TICKS_PER_INCH);
             if (gamepad1.a) {
                 ticksToGo += 10;
+                sleep(100);
             }
             if (gamepad1.b) {
                 ticksToGo -= 10;
+                sleep(100);
+
             }
             if (gamepad1.x) {
                 ticksToGo += 100;
+                sleep(100);
+
             }
             if (gamepad1.y) {
                 ticksToGo += 100;
+                sleep(100);
+
+            }
+            if(gamepad1.dpad_up) {
+                ticksToGo=120;
+                sleep(10);
+            }
+            if(gamepad1.dpad_down) {
+                ticksToGo=0;
+                sleep(10);
+            }
+            if(gamepad1.dpad_right) {
+                ticksToGo+=120;
+                sleep(10);
+            }
+            if(gamepad1.dpad_left) {
+                ticksToGo-=120;
+                sleep(10);
             }
             if (gamepad1.right_bumper) {
                 driveByTicks();

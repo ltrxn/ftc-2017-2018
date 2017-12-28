@@ -57,10 +57,10 @@ public class B1State extends LinearOpMode {
 
     private static final int THRESHOLD = 2; //tolerance when turning
 
-    private static final int DISTANCE_RIGHT = 20; //Distance from balancing stone to crytobox positions
-    private static final int DISTANCE_CENTER = 26;
-    private static final int DISTANCE_LEFT = 31;
-    private static final int DISTANCE_TO_CRYPTOBOX = 6; //Distance to push block to cryptobox.
+    private static final int DISTANCE_RIGHT = 34; //Distance from balancing stone to crytobox positions
+    private static final int DISTANCE_CENTER = 27;
+    private static final int DISTANCE_LEFT = 22;
+    private static final int DISTANCE_TO_CRYPTOBOX = 89; //Distance to push block to cryptobox.
     private static final int DRIVE_TIME_OUT = 10;
 
     //Color Sensors
@@ -139,7 +139,7 @@ public class B1State extends LinearOpMode {
 
                         if (redSensor > blueSensor) { //if ball is red...
                             encoderDrive(.06, -3, 3, 5); //turn left
-                            encoderDrive(.06, 3, -3, 5); //turn right
+                            encoderDrive(.06, 3, -4, 5); //turn right
                         } else { //if ball is blue...
                             encoderDrive(.1, 3, -3, 5); //turn right
                             encoderDrive(.1, -3, 3, 5); //turn left
@@ -184,7 +184,7 @@ public class B1State extends LinearOpMode {
 
                     if (robot.rightFront.getPower() == 0 || trialCounter > 3) { //make sure robot is not moving
 
-                        encoderDrive(DRIVE_SPEED, 15, -16, DRIVE_TIME_OUT);
+                        encoderDrive(DRIVE_SPEED, 16, -16, DRIVE_TIME_OUT);
                         newState(State.STATE_SCORE);
                     } else {
                         trialCounter++;
