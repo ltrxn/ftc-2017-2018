@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
  * Created by Trxn on 12/17/2017.
  */
 
-@Autonomous(name = "clout B1", group = "state")
+@Autonomous(name = "B1", group = "official")
 public class B1State extends LinearOpMode {
     //Robot Hardware
     private HardwareMichaelScott robot = new HardwareMichaelScott();
