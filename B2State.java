@@ -46,10 +46,10 @@ public class B2State extends LinearOpMode{
     //final values
     private static final double TICKS_PER_INCH  = 100; //# of ticks to be rotated to drive an inch
     private static final double DRIVE_SPEED     = .4; //Speed while going to crytobox
-    private static final int DISTANCE_RIGHT     = 36; //Distance from balancing stone to crytobox positions
-    private static final int DISTANCE_CENTER    = 30;
-    private static final int DISTANCE_LEFT      = 24;
-    private static final int DISTANCE_TO_CRYPTOBOX = 6; //Distance to push block to cryptobox.
+    private static final int DISTANCE_RIGHT     = 32; //Distance from balancing stone to crytobox positions
+    private static final int DISTANCE_CENTER    = 25;
+    private static final int DISTANCE_LEFT      = 18;
+    private static final int DISTANCE_TO_CRYPTOBOX = 4; //Distance to push block to cryptobox.
     private static final int DRIVE_TIME_OUT     = 10;
 
     //color
@@ -137,9 +137,9 @@ public class B2State extends LinearOpMode{
                 case STATE_LINE_UP_WITH_WALL: //end up against the wall
 
                     robot.raiseJewelKnockerRight(); //lift up jewel knocker
-                    encoderDrive(DRIVE_SPEED, -24,-24, DRIVE_TIME_OUT); //get off balancing stone
-                    encoderDrive(DRIVE_SPEED, -18, 18, DRIVE_TIME_OUT); //turn 90 counter clockwisee
-                    encoderDrive(DRIVE_SPEED, -20, -20, DRIVE_TIME_OUT); //back against the wall
+                    encoderDrive(DRIVE_SPEED, -19,-19, DRIVE_TIME_OUT); //get off balancing stone
+                    encoderDrive(DRIVE_SPEED, -19, 19, DRIVE_TIME_OUT); //turn 90 counter clockwisee
+                    encoderDrive(DRIVE_SPEED, -19, -19, DRIVE_TIME_OUT); //back against the wall
                     newState(State.STATE_DRIVE_TO_CRYPTOBOX);
 
                     break;
@@ -163,7 +163,7 @@ public class B2State extends LinearOpMode{
 
                 case STATE_FACE_CRYPTOBOX: //turn clockwise 90 degrees
 
-                    encoderDrive(DRIVE_SPEED, -18, 18, DRIVE_TIME_OUT);
+                    encoderDrive(DRIVE_SPEED, -19, 19, DRIVE_TIME_OUT);
                     newState(State.STATE_SCORE);
 
                     break;
@@ -172,17 +172,17 @@ public class B2State extends LinearOpMode{
                 case STATE_SCORE: //drive forward and drop glyph
                     encoderDrive(DRIVE_SPEED, DISTANCE_TO_CRYPTOBOX, DISTANCE_TO_CRYPTOBOX, DRIVE_TIME_OUT);
                     encoderDrive(DRIVE_SPEED, DISTANCE_TO_CRYPTOBOX, DISTANCE_TO_CRYPTOBOX, DRIVE_TIME_OUT);
-                    robot.pulley.setPower(-.3);
-                    sleep(200);
-                    robot.pulley.setPower(0);
-                    sleep(1000);
 
                     robot.openClaw(); //open glyph claw
                     sleep(1000);
                     encoderDrive(DRIVE_SPEED, -5, -5, DRIVE_TIME_OUT * 2);
                     encoderDrive(DRIVE_SPEED, 5, 5, DRIVE_TIME_OUT);
-                    encoderDrive(DRIVE_SPEED, -1, -1, DRIVE_TIME_OUT);
+                    encoderDrive(DRIVE_SPEED, -2, -2, DRIVE_TIME_OUT);
+                    robot.pulley.setPower(-.3);
+                    sleep(200);
+                    robot.pulley.setPower(0);
                     newState(State.STATE_STOP);
+
 
                     break;
 
