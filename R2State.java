@@ -2,22 +2,21 @@ package org.firstinspires.ftc.teamcode;
 
 import android.graphics.Color;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.teamcode.HardwareMichaelScott;
+import org.firstinspires.ftc.teamcode.R1State;
 
 /**
- * Created by Trxn on 12/17/2017.
+ * Created by Trxn on 12/28/2017.
  */
 
-@Autonomous(name = "clout R1", group = "state")
-public class R1State extends LinearOpMode {
-    //Robot Hardware
+public class R2State extends LinearOpMode{
+    //hardware
     private HardwareMichaelScott robot = new HardwareMichaelScott();
     private ColorSensor sensorColor;
 
@@ -25,84 +24,66 @@ public class R1State extends LinearOpMode {
     private enum State {
         STATE_INITIAL,
         STATE_KNOCK_JEWEL,
+        STATE_LINE_UP_WITH_WALL,
         STATE_DRIVE_TO_CRYPTOBOX,
         STATE_FACE_CRYPTOBOX,
         STATE_SCORE,
         STATE_STOP,
     }
 
-    //Loop cycle time stats variables
+    //time
     private ElapsedTime runTime = new ElapsedTime(); //time into round
     private ElapsedTime stateTime = new ElapsedTime(); //time into current state
     private ElapsedTime encoderTime = new ElapsedTime();
 
-
-
+    //values
     private State currentState; //current state machine state
     private double currentJewelKnockerDown = .57; //what to set down jewel knocker position as
     private int trialCounter = 0; //# of times tried before continuing
 
-    //Vumark
-    private RelicRecoveryVuMark vuMark; //what column to score in
-
-    //Encoders
-    private static final double ANDYMARK_TICKS_PER_REV = 1120; //# of ticks per revolution
-    private static final double DRIVE_GEAR_REDUCTION = .5;   //Since gears go from big to small, one rotation of the gear is actually only half a rotation of the wheel
-    private static final double WHEEL_DIAMETER_INCHES = 4;   //Diameter of the wheel
-    //private static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
-    private static final double TICKS_PER_INCH = 120; //# of ticks to be rotated to drive an inch
-
-    private static final double DRIVE_SPEED = .2; //Speed while going to crytobox
-    private static final double GYRO_TURN_SPEED = 0.5; //Speed while turning
-
-    private static final int THRESHOLD = 2; //tolerance when turning
-
-    private static final int DISTANCE_RIGHT = 20; //Distance from balancing stone to crytobox positions
-    private static final int DISTANCE_CENTER = 25;
-    private static final int DISTANCE_LEFT = 31;
+    //final values
+    private static final double TICKS_PER_INCH  = 100; //# of ticks to be rotated to drive an inch
+    private static final double DRIVE_SPEED     = .4; //Speed while going to crytobox
+    private static final int DISTANCE_RIGHT     = 36; //Distance from balancing stone to crytobox positions
+    private static final int DISTANCE_CENTER    = 30;
+    private static final int DISTANCE_LEFT      = 24;
     private static final int DISTANCE_TO_CRYPTOBOX = 6; //Distance to push block to cryptobox.
-    private static final int DRIVE_TIME_OUT = 10;
+    private static final int DRIVE_TIME_OUT     = 10;
 
-    //Color Sensors
-    private float hsvValues[] = {0F, 0F, 0F}; //holds hue, saturation, and value information
-    private final float values[] = hsvValues; //reference to ^^
-    private final double SCALE_FACTOR = 255; //amplify the difference
+    //color
     private int redSensor;
     private int blueSensor;
 
+    //vuforia
+    private RelicRecoveryVuMark vuMark; //what column to score in
+
+
     @Override
     public void runOpMode() throws InterruptedException {
-
-        //Initialize
+        //initialization
         robot.init(hardwareMap);
         sensorColor = hardwareMap.get(ColorSensor.class, "colorSensor");
-
         robot.resetEncoders(); //reset encoders
         robot.stopDriving(); //ensure motors are off
-
         telemetry.addData(">", "초기화가 완료되었습니다 (READY TO ROCK AND ROLL)"); //alert driver that robot is finished with initialization
         telemetry.update();
 
+        //start
         waitForStart();
-        //Start
-
         runTime.reset(); //zero game clock
-
         newState(State.STATE_INITIAL); //set currentState to initial
         robot.relicTrackables.activate(); //activate vuforia
 
-        //Start loop
+        //start of loop
         while (opModeIsActive()) {
-            //first line of telemetry, runt time and current state time
-
 
             switch (currentState) {
-                case STATE_INITIAL: //Remember VuMark and pickup glyph
+                case STATE_INITIAL: //remember vumark and pickup glyph
+
+                    vuMark = robot.getVuMark(); //get vumark
 
                     if (robot.vuMarkIsVisable() || trialCounter > 3) {
-                        telemetry.addData("VuMark", "%s visible", vuMark);
                         vuMark = robot.getVuMark();
-
                         robot.closeClaw();
                         sleep(500);
                         robot.pulley.setPower(.3);
@@ -113,7 +94,6 @@ public class R1State extends LinearOpMode {
 
                     } else {
 
-                        telemetry.addData("VuMark", "Is not visible");
                         trialCounter++;
 
                     }
@@ -121,6 +101,7 @@ public class R1State extends LinearOpMode {
 
 
                 case STATE_KNOCK_JEWEL: //knock off the blue jewel
+
                     vuMark = robot.getVuMark(); //get vumark again
 
                     robot.jewelKnockerRight.setPosition(currentJewelKnockerDown); //lower jewel knocker
@@ -128,12 +109,7 @@ public class R1State extends LinearOpMode {
 
                     redSensor = sensorColor.red(); //remember red value
                     blueSensor = sensorColor.blue(); //remember blue value
-                    Color.RGBToHSV((int) (sensorColor.red() * SCALE_FACTOR), //remember other values
-                            (int) (sensorColor.green() * SCALE_FACTOR),
-                            (int) (sensorColor.blue() * SCALE_FACTOR),
-                            hsvValues);
-
-                    sleep(1000);
+                    sleep(500);
 
                     if (blueSensor > 20 || redSensor > 20 || trialCounter > 3) { //if there is a strong blue/red return...
 
@@ -145,7 +121,7 @@ public class R1State extends LinearOpMode {
                             encoderDrive(.1, -3, 3, 5); //turn left
                         }
 
-                        newState(State.STATE_DRIVE_TO_CRYPTOBOX);
+                        newState(State.STATE_LINE_UP_WITH_WALL);
 
                     } else {
 
@@ -155,111 +131,83 @@ public class R1State extends LinearOpMode {
                     }
                     break;
 
-                case STATE_DRIVE_TO_CRYPTOBOX: //drive till the cryptobox (according to vuforia)
+
+                case STATE_LINE_UP_WITH_WALL: //end up against the wall
 
                     robot.raiseJewelKnockerRight(); //lift up jewel knocker
-
-                    if (robot.jewelKnockerRight.getPosition() < .3 || trialCounter > 3) { //if the jewel knocker is up...
-
-                        if (vuMark == RelicRecoveryVuMark.LEFT) { //vuMark left
-                            encoderDrive(DRIVE_SPEED, DISTANCE_LEFT, DISTANCE_LEFT, DRIVE_TIME_OUT);
-                        } else if (vuMark == RelicRecoveryVuMark.CENTER) { //vuMark center
-                            encoderDrive(DRIVE_SPEED, DISTANCE_CENTER, DISTANCE_CENTER, DRIVE_TIME_OUT);
-                        } else if (vuMark == RelicRecoveryVuMark.RIGHT) { //vuMark righht
-                            encoderDrive(DRIVE_SPEED, DISTANCE_RIGHT, DISTANCE_RIGHT, DRIVE_TIME_OUT);
-                        } else { //go center if vuMark is unknown
-                            encoderDrive(DRIVE_SPEED, DISTANCE_CENTER, DISTANCE_CENTER, DRIVE_TIME_OUT);
-                        }
-
-                        newState(State.STATE_FACE_CRYPTOBOX);
-
-                    } else {
-                        robot.raiseJewelKnockerRight();
-                        trialCounter++;
-                    }
+                    encoderDrive(DRIVE_SPEED, 24,24, DRIVE_TIME_OUT); //get off balancing stone
+                    encoderDrive(DRIVE_SPEED, -18, 18, DRIVE_TIME_OUT); //turn 90 counter clockwisee
+                    encoderDrive(DRIVE_SPEED, -20, -20, DRIVE_TIME_OUT); //back against the wall
+                    newState(State.STATE_DRIVE_TO_CRYPTOBOX);
 
                     break;
 
-                case STATE_FACE_CRYPTOBOX: //turn towards the cryptobox
 
-                    if (robot.rightFront.getPower() == 0 || trialCounter > 3) { //make sure robot is not moving
+                case STATE_DRIVE_TO_CRYPTOBOX: //drive to correct cryptobox
 
-                        encoderDrive(DRIVE_SPEED, 15, -16, DRIVE_TIME_OUT);
-                        newState(State.STATE_SCORE);
-                    } else {
-                        trialCounter++;
-                        robot.stopDriving(); //stop the driving
-                        telemetry.addData("Motor", "is still driving");
+                    if (vuMark == RelicRecoveryVuMark.LEFT) { //vuMark left
+                        encoderDrive(DRIVE_SPEED, DISTANCE_LEFT, DISTANCE_LEFT, DRIVE_TIME_OUT);
+                    } else if (vuMark == RelicRecoveryVuMark.CENTER) { //vuMark center
+                        encoderDrive(DRIVE_SPEED, DISTANCE_CENTER, DISTANCE_CENTER, DRIVE_TIME_OUT);
+                    } else if (vuMark == RelicRecoveryVuMark.RIGHT) { //vuMark righht
+                        encoderDrive(DRIVE_SPEED, DISTANCE_RIGHT, DISTANCE_RIGHT, DRIVE_TIME_OUT);
+                    } else { //go center if vuMark is unknown
+                        encoderDrive(DRIVE_SPEED, DISTANCE_CENTER, DISTANCE_CENTER, DRIVE_TIME_OUT);
                     }
+                    newState(State.STATE_FACE_CRYPTOBOX);
 
                     break;
 
-                case STATE_SCORE: //turn towards the cryptobox
 
-                    if (robot.rightFront.getPower() == 0 || trialCounter > 3) { //make sure robot is not moving
+                case STATE_FACE_CRYPTOBOX: //turn clockwise 90 degrees
 
-                        encoderDrive(DRIVE_SPEED, DISTANCE_TO_CRYPTOBOX, DISTANCE_TO_CRYPTOBOX, DRIVE_TIME_OUT);
-                        robot.pulley.setPower(-.3);
-                        sleep(200);
-                        robot.pulley.setPower(0);
-                        sleep(1000);
-
-                        robot.openClaw(); //open glyph claw
-                        sleep(1000);
-                        encoderDrive(DRIVE_SPEED, -5, -5, DRIVE_TIME_OUT * 2);
-                        encoderDrive(DRIVE_SPEED, 5, 5, DRIVE_TIME_OUT);
-                        encoderDrive(DRIVE_SPEED, -1, -1, DRIVE_TIME_OUT);
-                        newState(State.STATE_STOP);
-                    } else {
-                        trialCounter++;
-                        robot.stopDriving(); //stop the driving
-                        telemetry.addData("Motor", "is still driving");
-                    }
+                    encoderDrive(DRIVE_SPEED, 18, -18, DRIVE_TIME_OUT);
+                    newState(State.STATE_SCORE);
 
                     break;
-/*                case STATE_SCORE: //drive up to the cryptobox and release the glyph
-                    if (robot.rightFront.getPower() == 0 || trialCounter > 3) { //make sure robot is not moving
 
-                        encoderDrive(DRIVE_SPEED, DISTANCE_TO_CRYPTOBOX, DISTANCE_TO_CRYPTOBOX, DRIVE_TIME_OUT);
 
-                        robot.pulley.setPower(-.3); //lower the pulley
-                        sleep(300);
-                        robot.pulley.setPower(0);
-                        robot.openClaw(); //open glyph claw
+                case STATE_SCORE: //drive forward and drop glyph
+                    encoderDrive(DRIVE_SPEED, DISTANCE_TO_CRYPTOBOX, DISTANCE_TO_CRYPTOBOX, DRIVE_TIME_OUT);
+                    encoderDrive(DRIVE_SPEED, DISTANCE_TO_CRYPTOBOX, DISTANCE_TO_CRYPTOBOX, DRIVE_TIME_OUT);
+                    robot.pulley.setPower(-.3);
+                    sleep(200);
+                    robot.pulley.setPower(0);
+                    sleep(1000);
 
-                        newState(State.STATE_STOP);
-
-                    } else {
-                        trialCounter++;
-                        robot.stopDriving(); //stop the driving
-                        telemetry.addData("Motor", "is still driving");
-                    }
+                    robot.openClaw(); //open glyph claw
+                    sleep(1000);
+                    encoderDrive(DRIVE_SPEED, -5, -5, DRIVE_TIME_OUT * 2);
+                    encoderDrive(DRIVE_SPEED, 5, 5, DRIVE_TIME_OUT);
+                    encoderDrive(DRIVE_SPEED, -1, -1, DRIVE_TIME_OUT);
+                    newState(State.STATE_STOP);
 
                     break;
-*/
-                case STATE_STOP: //do nothing
 
+
+                    case STATE_STOP: //do nothing
                     break;
             }
+
+
             telemetry.addData("Time", "%2f  " + currentState.toString(), stateTime.time());
             telemetry.addData("Pictograph", "%s", vuMark);
             telemetry.addData("Trial Counter", trialCounter);
             telemetry.update(); //Update Telemetry
 
-            sleep(1000);
+            sleep(250);
 
         }
     }
 
-
-    //Sets a new state and resets state clock
+    //Sets a new state, resets state clock, and reset trialCounter
     private void newState(State newState) {
         currentState = newState;
         stateTime.reset();
         trialCounter = 0;
     }
 
-    //Drives forward using encoders
+    //drive forward using encoders
     private void encoderDrive(double speed,
                               double leftInches, double rightInches,
                               double timeoutS) {
@@ -268,7 +216,7 @@ public class R1State extends LinearOpMode {
         int newRightFrontTarget;
         int newRightBackTarget;
 
-        // Ensure that the opmode is still active
+        // ensure that the opmode is still active
         if (opModeIsActive()) {
 
             robot.resetEncoders();
@@ -283,7 +231,7 @@ public class R1State extends LinearOpMode {
             robot.rightFront.setTargetPosition(newRightFrontTarget);
             robot.rightBack.setTargetPosition(newRightBackTarget);
 
-            // Turn On RUN_TO_POSITION
+            // turn On RUN_TO_POSITION
             robot.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
@@ -296,19 +244,20 @@ public class R1State extends LinearOpMode {
                     (encoderTime.seconds() < timeoutS) &&
                     (robot.leftFront.isBusy() && robot.leftBack.isBusy() && robot.rightFront.isBusy() && robot.rightBack.isBusy())) {
 
-                // Display it for the driver.
+                // display it for the driver.
                 telemetry.addData("Goal Position", "%7d :%7d :%7d :%7d", newLeftFrontTarget, newLeftBackTarget, newRightFrontTarget, newRightBackTarget);
                 telemetry.addData("Current Position", "%7d :%7d :%7d :%7d",
                         robot.leftFront.getCurrentPosition(),
                         robot.leftBack.getCurrentPosition(),
                         robot.rightFront.getCurrentPosition(),
                         robot.rightBack.getCurrentPosition());
+                telemetry.update();
             }
 
-            // Stop all motion;
+            // stop all motion;
             robot.stopDriving();
 
-            // Turn off RUN_TO_POSITION
+            // turn off RUN_TO_POSITION
             robot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             sleep(100);   // optional pause after each move

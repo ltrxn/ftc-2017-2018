@@ -50,17 +50,17 @@ public class B1State extends LinearOpMode {
     private static final double DRIVE_GEAR_REDUCTION = .5;   //Since gears go from big to small, one rotation of the gear is actually only half a rotation of the wheel
     private static final double WHEEL_DIAMETER_INCHES = 4;   //Diameter of the wheel
     //private static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
-    private static final double TICKS_PER_INCH = 120; //# of ticks to be rotated to drive an inch
+    private static final double TICKS_PER_INCH = 100; //# of ticks to be rotated to drive an inch
 
     private static final double DRIVE_SPEED = .2; //Speed while going to crytobox
     private static final double GYRO_TURN_SPEED = 0.5; //Speed while turning
 
     private static final int THRESHOLD = 2; //tolerance when turning
 
-    private static final int DISTANCE_RIGHT = 34; //Distance from balancing stone to crytobox positions
-    private static final int DISTANCE_CENTER = 27;
-    private static final int DISTANCE_LEFT = 22;
-    private static final int DISTANCE_TO_CRYPTOBOX = 89; //Distance to push block to cryptobox.
+    private static final int DISTANCE_RIGHT = 39; //Distance from balancing stone to crytobox positions
+    private static final int DISTANCE_CENTER = 32;
+    private static final int DISTANCE_LEFT = 26;
+    private static final int DISTANCE_TO_CRYPTOBOX = 7; //Distance to push block to cryptobox.
     private static final int DRIVE_TIME_OUT = 10;
 
     //Color Sensors
@@ -120,7 +120,7 @@ public class B1State extends LinearOpMode {
                     break;
 
 
-                case STATE_KNOCK_JEWEL: //knock off the blue jewel
+                case STATE_KNOCK_JEWEL: //knock off the red jewel
                     vuMark = robot.getVuMark(); //get vumark again
 
                     robot.jewelKnockerRight.setPosition(currentJewelKnockerDown); //lower jewel knocker
@@ -137,7 +137,7 @@ public class B1State extends LinearOpMode {
 
                     if (blueSensor > 20 || redSensor > 20 || trialCounter > 3) { //if there is a strong blue/red return...
 
-                        if (redSensor > blueSensor) { //if ball is red...
+                        if (redSensor < blueSensor) { //if ball is blue...
                             encoderDrive(.06, -3, 3, 5); //turn left
                             encoderDrive(.06, 3, -4, 5); //turn right
                         } else { //if ball is blue...
@@ -184,7 +184,7 @@ public class B1State extends LinearOpMode {
 
                     if (robot.rightFront.getPower() == 0 || trialCounter > 3) { //make sure robot is not moving
 
-                        encoderDrive(DRIVE_SPEED, 16, -16, DRIVE_TIME_OUT);
+                        encoderDrive(DRIVE_SPEED, 18, -18, DRIVE_TIME_OUT);
                         newState(State.STATE_SCORE);
                     } else {
                         trialCounter++;
@@ -200,13 +200,16 @@ public class B1State extends LinearOpMode {
 
                         encoderDrive(DRIVE_SPEED, DISTANCE_TO_CRYPTOBOX, DISTANCE_TO_CRYPTOBOX, DRIVE_TIME_OUT);
                         robot.pulley.setPower(-.3);
-                        sleep(200);
+                        sleep(220);
                         robot.pulley.setPower(0);
-                        sleep(1400);
+                        sleep(1000);
 
                         robot.openClaw(); //open glyph claw
-                        sleep(1400);
-                        encoderDrive(DRIVE_SPEED, -3, -3, DRIVE_TIME_OUT);
+                        sleep(1000);
+
+                        encoderDrive(DRIVE_SPEED, -5, -5, DRIVE_TIME_OUT * 2);
+                        encoderDrive(DRIVE_SPEED, 5, 5, DRIVE_TIME_OUT);
+                        encoderDrive(DRIVE_SPEED, -1, -1, DRIVE_TIME_OUT);
                         newState(State.STATE_STOP);
                     } else {
                         trialCounter++;
@@ -244,7 +247,7 @@ public class B1State extends LinearOpMode {
             telemetry.addData("Trial Counter", trialCounter);
             telemetry.update(); //Update Telemetry
 
-            sleep(1000);
+
 
         }
     }

@@ -24,7 +24,7 @@ public class HardwareMichaelScott {
     public DcMotor rightFront = null;
     public DcMotor leftBack = null;
     public DcMotor rightBack = null;
-    DcMotor pulley;
+    public DcMotor pulley;
     //Servos
     public Servo jewelKnockerRight = null;
     public Servo glyphClawRight = null;
