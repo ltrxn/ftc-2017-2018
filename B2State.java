@@ -46,7 +46,7 @@ public class B2State extends LinearOpMode{
     //final values
     private static final double TICKS_PER_INCH  = 100; //# of ticks to be rotated to drive an inch
     private static final double DRIVE_SPEED     = .4; //Speed while going to crytobox
-    private static final int DISTANCE_RIGHT     = 32; //Distance from balancing stone to crytobox positions
+    private static final int DISTANCE_RIGHT     = 33; //Distance from balancing stone to crytobox positions
     private static final int DISTANCE_CENTER    = 25;
     private static final int DISTANCE_LEFT      = 18;
     private static final int DISTANCE_TO_CRYPTOBOX = 4; //Distance to push block to cryptobox.
@@ -137,7 +137,7 @@ public class B2State extends LinearOpMode{
                 case STATE_LINE_UP_WITH_WALL: //end up against the wall
 
                     robot.raiseJewelKnockerRight(); //lift up jewel knocker
-                    encoderDrive(DRIVE_SPEED, -19,-19, DRIVE_TIME_OUT); //get off balancing stone
+                    encoderDrive(DRIVE_SPEED, -22,-22, DRIVE_TIME_OUT); //get off balancing stone
                     encoderDrive(DRIVE_SPEED, -19, 19, DRIVE_TIME_OUT); //turn 90 counter clockwisee
                     encoderDrive(DRIVE_SPEED, -19, -19, DRIVE_TIME_OUT); //back against the wall
                     newState(State.STATE_DRIVE_TO_CRYPTOBOX);

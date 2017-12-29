@@ -48,7 +48,7 @@ public class R2State extends LinearOpMode{
     private static final double DRIVE_SPEED     = .4; //Speed while going to crytobox
     private static final int DISTANCE_RIGHT     = 18; //Distance from balancing stone to crytobox positions
     private static final int DISTANCE_CENTER    = 25;
-    private static final int DISTANCE_LEFT      = 32;
+    private static final int DISTANCE_LEFT      = 33;
     private static final int DISTANCE_TO_CRYPTOBOX = 4; //Distance to push block to cryptobox.
     private static final int DRIVE_TIME_OUT     = 10;
 
