@@ -47,7 +47,7 @@ public class B2State extends LinearOpMode{
     private static final double TICKS_PER_INCH  = 100; //# of ticks to be rotated to drive an inch
     private static final double DRIVE_SPEED     = .5; //Speed while going to crytobox
     private static final int DISTANCE_RIGHT     = 31; //Distance from balancing stone to crytobox positions
-    private static final int DISTANCE_CENTER    = 24;
+    private static final int DISTANCE_CENTER    = 26;
     private static final int DISTANCE_LEFT      = 18;
     private static final int DISTANCE_TO_CRYPTOBOX = 4; //Distance to push block to cryptobox.
     private static final int DRIVE_TIME_OUT     = 10;
