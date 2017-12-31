@@ -46,7 +46,7 @@ public class R2State extends LinearOpMode{
     //final values
     private static final double TICKS_PER_INCH  = 100; //# of ticks to be rotated to drive an inch
     private static final double DRIVE_SPEED     = .4; //Speed while going to crytobox
-    private static final int DISTANCE_RIGHT     = 18; //Distance from balancing stone to crytobox positions
+    private static final int DISTANCE_RIGHT     = 19; //Distance from balancing stone to crytobox positions
     private static final int DISTANCE_CENTER    = 25;
     private static final int DISTANCE_LEFT      = 33;
     private static final int DISTANCE_TO_CRYPTOBOX = 4; //Distance to push block to cryptobox.
@@ -175,7 +175,7 @@ public class R2State extends LinearOpMode{
 
                     robot.openClaw(); //open glyph claw
                     sleep(1000);
-                    encoderDrive(DRIVE_SPEED, -5, -5, DRIVE_TIME_OUT * 2);
+                    encoderDrive(DRIVE_SPEED *2, -5, -5, DRIVE_TIME_OUT * 3);
                     encoderDrive(DRIVE_SPEED, 5, 5, DRIVE_TIME_OUT);
                     encoderDrive(DRIVE_SPEED, -2, -2, DRIVE_TIME_OUT);
                     robot.pulley.setPower(-.3);

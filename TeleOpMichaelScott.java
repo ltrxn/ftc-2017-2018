@@ -156,6 +156,14 @@ public class TeleOpMichaelScott extends LinearOpMode {
             if (gamepad1.dpad_up) {
                 robot.resetEncoders();
             }
+            if (gamepad1.dpad_down) {
+                robot.glyphClawRight.setPosition(.5);
+                robot.glyphClawRight.setPosition(.5);
+            }
+            if (gamepad2.dpad_down) {
+                robot.glyphClawRight.setPosition(.5);
+                robot.glyphClawRight.setPosition(.5);
+            }
 
 
             telemetry.addData("Right jewel knocker position", robot.jewelKnockerRight.getPosition());
