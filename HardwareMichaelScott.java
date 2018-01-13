@@ -93,7 +93,8 @@ public class HardwareMichaelScott {
         rightFront.setPower(0);
         leftBack.setPower(0);
         rightBack.setPower(0);
-        closeClaw();
+        glyphClawLeft.setPosition(0);
+        glyphClawRight.setPosition(1);
         raiseJewelKnockerRight();
 
         //VUFORIA SETUP

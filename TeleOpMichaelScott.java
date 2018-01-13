@@ -49,14 +49,14 @@ public class TeleOpMichaelScott extends LinearOpMode {
         robot.init(hardwareMap);
 
         jewelKnockerCounter = 1;
-        //telemetry.addData(">", "초기화가 완료되었습니다 (Initialization is finished)");
-        telemetry.addData(">", "Инициализация завершена!");
+        telemetry.addData(">", "Initialization Complete");
         telemetry.update();
 
         waitForStart();
 
 
         while (opModeIsActive()) {
+
 
             //Gamepad 1 - Left Joystick - Strafes robot
             double r = Math.hypot(-gamepad1.left_stick_x, -gamepad1.left_stick_y);
@@ -68,10 +68,8 @@ public class TeleOpMichaelScott extends LinearOpMode {
             final double v4 = r * Math.cos(robotAngle) - rightY;
 
             robot.leftFront.setPower(v1);
-            //robot.leftFront.setPower(v1*.90);
             robot.rightFront.setPower(v2);
             robot.leftBack.setPower(v3);
-            //robot.leftBack.setPower(v3*.88);
             robot.rightBack.setPower(v4);
 
 
@@ -86,9 +84,8 @@ public class TeleOpMichaelScott extends LinearOpMode {
             }
 
             //Gamepad 2 - Right Joystick - moves pulley
-            float pulleyPowerRight = -gamepad2.right_stick_y;
-            pulleyPowerRight *= .3;
-            robot.pulley.setPower(pulleyPowerRight);
+            double pulleyPowerRight = -gamepad2.right_stick_y;
+            robot.pulley.setPower(scaleInput(pulleyPowerRight)); //scaled
 
             //Gamepad 1 - Right Trigger - Robot turns clockwise
             while (gamepad1.right_trigger > 0) {
@@ -131,41 +128,19 @@ public class TeleOpMichaelScott extends LinearOpMode {
                 robot.lowerJewelKnockerRight();
             }
 
-
-
-            /* If we get a left jewel knocker
-            if (gamepad2.x){
-                robot.raiseJewelKnockerLeft();
-            }
-
-            if (gamepad2.y) {
-                robot.lowerJewelKnockerLeft();
-            }
-            */
-
-            /* Vuforia Testing Code
-            robot.relicTrackables.activate();
-            RelicRecoveryVuMark vuMark = robot.getVuMark();
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                telemetry.addData("VuMark", "%s visible", vuMark);
-            } else {
-                telemetry.addData("VuMark", "Is not visable");
-            }
-            */
-
-            if (gamepad1.dpad_up) {
-                robot.resetEncoders();
-            }
+            //Gamepad 1 - dpad down - Put claw in middle position
             if (gamepad1.dpad_down) {
                 robot.glyphClawRight.setPosition(.5);
-                robot.glyphClawRight.setPosition(.5);
+                robot.glyphClawLeft.setPosition(.5);
             }
+
+            //Gamepad 2 - dpad down - Put claw in middle position
             if (gamepad2.dpad_down) {
                 robot.glyphClawRight.setPosition(.5);
-                robot.glyphClawRight.setPosition(.5);
+                robot.glyphClawLeft.setPosition(.5);
             }
 
-
+            //telemetry
             telemetry.addData("Right jewel knocker position", robot.jewelKnockerRight.getPosition());
             telemetry.addData("Left glyph claw position", robot.glyphClawLeft.getPosition());
             telemetry.addData("Right glyph claw position", robot.glyphClawRight.getPosition());
@@ -177,6 +152,26 @@ public class TeleOpMichaelScott extends LinearOpMode {
             telemetry.update();
             idle();
         }
+    }
+
+    //Makes joystick easier to control
+    double scaleInput(double dVal)  {
+        double[] scaleArray = { 0.0, 0.05, 0.09, 0.10, 0.12, 0.15, 0.18, 0.24,
+                0.30, 0.36, 0.43, 0.50, 0.60, 0.72, 0.85, 1.00, 1.00 };
+        int index = (int) (dVal * 16.0);
+        if (index < 0) {
+            index = -index;
+        }
+        if (index > 16) {
+            index = 16;
+        }
+        double dScale = 0.0;
+        if (dVal < 0) {
+            dScale = -scaleArray[index];
+        } else {
+            dScale = scaleArray[index];
+        }
+        return dScale;
     }
 
 }

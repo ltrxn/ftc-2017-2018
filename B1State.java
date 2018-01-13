@@ -33,9 +33,7 @@ public class B1State extends LinearOpMode {
     //Loop cycle time stats variables
     private ElapsedTime runTime = new ElapsedTime(); //time into round
     private ElapsedTime stateTime = new ElapsedTime(); //time into current state
-    private ElapsedTime encoderTime = new ElapsedTime();
-
-
+    private ElapsedTime encoderTime = new ElapsedTime(); //time into encoder code
 
     private State currentState; //current state machine state
     private double currentJewelKnockerDown = .57; //what to set down jewel knocker position as
@@ -49,19 +47,20 @@ public class B1State extends LinearOpMode {
     private static final double ANDYMARK_TICKS_PER_REV = 1120; //# of ticks per revolution
     private static final double DRIVE_GEAR_REDUCTION = .5;   //Since gears go from big to small, one rotation of the gear is actually only half a rotation of the wheel
     private static final double WHEEL_DIAMETER_INCHES = 4;   //Diameter of the wheel
-    //private static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
-    private static final double TICKS_PER_INCH = 100; //# of ticks to be rotated to drive an inch
-
+    private static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
+    private static final double MANUAL_TICKS_PER_INCH = 100; //# of ticks to be rotated to drive an inch
     private static final double DRIVE_SPEED = .2; //Speed while going to crytobox
-    private static final double GYRO_TURN_SPEED = 0.5; //Speed while turning
 
+    //Gyro (not used)
+    private static final double GYRO_TURN_SPEED = 0.5; //Speed while turning
     private static final int THRESHOLD = 2; //tolerance when turning
 
+    //Distances
     private static final int DISTANCE_RIGHT = 39; //Distance from balancing stone to crytobox positions
     private static final int DISTANCE_CENTER = 32;
     private static final int DISTANCE_LEFT = 26;
     private static final int DISTANCE_TO_CRYPTOBOX = 7; //Distance to push block to cryptobox.
-    private static final int DRIVE_TIME_OUT = 10;
+    private static final int DRIVE_TIME_OUT = 10; //Time out time in seconds
 
     //Color Sensors
     private float hsvValues[] = {0F, 0F, 0F}; //holds hue, saturation, and value information
@@ -73,7 +72,8 @@ public class B1State extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        //Initialize
+
+        //******Initialize*****//
         robot.init(hardwareMap);
         sensorColor = hardwareMap.get(ColorSensor.class, "colorSensor");
 
@@ -84,19 +84,21 @@ public class B1State extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        //Start
 
+
+        //*****Start*****//
         runTime.reset(); //zero game clock
 
         newState(State.STATE_INITIAL); //set currentState to initial
         robot.relicTrackables.activate(); //activate vuforia
 
-        //Start loop
+        //*****Start Loop*****//
         while (opModeIsActive()) {
-            //first line of telemetry, runt time and current state time
 
-
+            //start of state
             switch (currentState) {
+
+
                 case STATE_INITIAL: //Remember VuMark and pickup glyph
 
                     if (robot.vuMarkIsVisable() || trialCounter > 3) {
@@ -121,9 +123,11 @@ public class B1State extends LinearOpMode {
 
 
                 case STATE_KNOCK_JEWEL: //knock off the red jewel
+
                     vuMark = robot.getVuMark(); //get vumark again
 
                     robot.jewelKnockerRight.setPosition(currentJewelKnockerDown); //lower jewel knocker
+
                     sleep(1000);
 
                     redSensor = sensorColor.red(); //remember red value
@@ -155,6 +159,7 @@ public class B1State extends LinearOpMode {
                     }
                     break;
 
+
                 case STATE_DRIVE_TO_CRYPTOBOX: //drive till the cryptobox (according to vuforia)
 
                     robot.raiseJewelKnockerRight(); //lift up jewel knocker
@@ -177,8 +182,8 @@ public class B1State extends LinearOpMode {
                         robot.raiseJewelKnockerRight();
                         trialCounter++;
                     }
-
                     break;
+
 
                 case STATE_FACE_CRYPTOBOX: //turn towards the cryptobox
 
@@ -186,13 +191,15 @@ public class B1State extends LinearOpMode {
 
                         encoderDrive(DRIVE_SPEED, 18, -18, DRIVE_TIME_OUT);
                         newState(State.STATE_SCORE);
+
                     } else {
+
                         trialCounter++;
                         robot.stopDriving(); //stop the driving
                         telemetry.addData("Motor", "is still driving");
                     }
-
                     break;
+
 
                 case STATE_SCORE: //turn towards the cryptobox
 
@@ -211,47 +218,32 @@ public class B1State extends LinearOpMode {
                         encoderDrive(DRIVE_SPEED, 5, 5, DRIVE_TIME_OUT);
                         encoderDrive(DRIVE_SPEED, -1, -1, DRIVE_TIME_OUT);
                         newState(State.STATE_STOP);
+
                     } else {
+
                         trialCounter++;
                         robot.stopDriving(); //stop the driving
                         telemetry.addData("Motor", "is still driving");
                     }
-
                     break;
-/*                case STATE_SCORE: //drive up to the cryptobox and release the glyph
-                    if (robot.rightFront.getPower() == 0 || trialCounter > 3) { //make sure robot is not moving
 
-                        encoderDrive(DRIVE_SPEED, DISTANCE_TO_CRYPTOBOX, DISTANCE_TO_CRYPTOBOX, DRIVE_TIME_OUT);
 
-                        robot.pulley.setPower(-.3); //lower the pulley
-                        sleep(300);
-                        robot.pulley.setPower(0);
-                        robot.openClaw(); //open glyph claw
-
-                        newState(State.STATE_STOP);
-
-                    } else {
-                        trialCounter++;
-                        robot.stopDriving(); //stop the driving
-                        telemetry.addData("Motor", "is still driving");
-                    }
-
-                    break;
-*/
                 case STATE_STOP: //do nothing
-
                     break;
+
             }
+
+
+            //telemetry
             telemetry.addData("Time", "%2f  " + currentState.toString(), stateTime.time());
             telemetry.addData("Pictograph", "%s", vuMark);
             telemetry.addData("Trial Counter", trialCounter);
             telemetry.update(); //Update Telemetry
 
-
-
         }
     }
 
+    //*****Methods*****//
 
     //Sets a new state and resets state clock
     private void newState(State newState) {
@@ -275,10 +267,10 @@ public class B1State extends LinearOpMode {
             robot.resetEncoders();
 
             // Determine new target position, and pass to motor controller
-            newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int) (leftInches * TICKS_PER_INCH);
-            newLeftBackTarget = robot.leftBack.getCurrentPosition() + (int) (leftInches * TICKS_PER_INCH);
-            newRightFrontTarget = robot.rightFront.getCurrentPosition() + (int) (rightInches * TICKS_PER_INCH);
-            newRightBackTarget = robot.rightBack.getCurrentPosition() + (int) (rightInches * TICKS_PER_INCH);
+            newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int) (leftInches * MANUAL_TICKS_PER_INCH);
+            newLeftBackTarget = robot.leftBack.getCurrentPosition() + (int) (leftInches * MANUAL_TICKS_PER_INCH);
+            newRightFrontTarget = robot.rightFront.getCurrentPosition() + (int) (rightInches * MANUAL_TICKS_PER_INCH);
+            newRightBackTarget = robot.rightBack.getCurrentPosition() + (int) (rightInches * MANUAL_TICKS_PER_INCH);
             robot.leftFront.setTargetPosition(newLeftFrontTarget);
             robot.leftBack.setTargetPosition(newLeftBackTarget);
             robot.rightFront.setTargetPosition(newRightFrontTarget);
@@ -315,4 +307,5 @@ public class B1State extends LinearOpMode {
             sleep(100);   // optional pause after each move
         }
     }
+
 }
