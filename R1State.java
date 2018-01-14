@@ -52,14 +52,15 @@ public class R1State extends LinearOpMode {
     //private static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415); //# of ticks to be rotated to drive an inch
     private static final double TICKS_PER_INCH = 120; //# of ticks to be rotated to drive an inch
 
-    private static final double DRIVE_SPEED = .3; //Speed while going to crytobox
+    private static final double DRIVE_SPEED = .4; //Speed while going to crytobox
     private static final double GYRO_TURN_SPEED = 0.5; //Speed while turning
 
     private static final int THRESHOLD = 2; //tolerance when turning
 
-    private static final int DISTANCE_RIGHT = 20; //Distance from balancing stone to crytobox positions
-    private static final int DISTANCE_CENTER = 26;
-    private static final int DISTANCE_LEFT = 31;
+    private static final int DISTANCE_RIGHT = 21; //Distance from balancing stone to crytobox positions
+    private static final int DISTANCE_CENTER = 27;
+    private static final int DISTANCE_LEFT = 32
+            ;
     private static final int DISTANCE_TO_CRYPTOBOX = 5; //Distance to push block to cryptobox.
     private static final int DRIVE_TIME_OUT = 10;
 
@@ -149,7 +150,6 @@ public class R1State extends LinearOpMode {
 
                     } else {
 
-                        currentJewelKnockerDown -= .02; //raise it up a bit
                         trialCounter++;
 
                     }

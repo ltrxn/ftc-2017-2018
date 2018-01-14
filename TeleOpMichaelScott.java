@@ -57,11 +57,12 @@ public class TeleOpMichaelScott extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            robot.relicTrackables.activate(); //activate vuforia
 
             //Gamepad 1 - Left Joystick - Strafes robot
             double r = Math.hypot(-gamepad1.left_stick_x, -gamepad1.left_stick_y);
             double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 3.5;
-            double rightY = gamepad1.right_stick_y / 2;
+            double rightY = gamepad1.right_stick_y / 1;
             final double v1 = r * Math.cos(robotAngle) - rightY;
             final double v2 = r * Math.sin(robotAngle) - rightY;
             final double v3 = r * Math.sin(robotAngle) - rightY;
@@ -115,6 +116,14 @@ public class TeleOpMichaelScott extends LinearOpMode {
                 currentRight = rightGlyphClawClose;
                 currentLeft = leftGlyphClawClose;
             }
+
+            //Gamepad 1/2 - dpad down - Put claw in middle position
+            if (gamepad1.dpad_down || gamepad2.dpad_down) {
+                currentRight = 0.5;
+                currentLeft = 0.5;
+            }
+
+
             robot.glyphClawRight.setPosition(currentRight);
             robot.glyphClawLeft.setPosition(currentLeft);
 
@@ -128,17 +137,7 @@ public class TeleOpMichaelScott extends LinearOpMode {
                 robot.lowerJewelKnockerRight();
             }
 
-            //Gamepad 1 - dpad down - Put claw in middle position
-            if (gamepad1.dpad_down) {
-                robot.glyphClawRight.setPosition(.5);
-                robot.glyphClawLeft.setPosition(.5);
-            }
 
-            //Gamepad 2 - dpad down - Put claw in middle position
-            if (gamepad2.dpad_down) {
-                robot.glyphClawRight.setPosition(.5);
-                robot.glyphClawLeft.setPosition(.5);
-            }
 
             //telemetry
             telemetry.addData("Right jewel knocker position", robot.jewelKnockerRight.getPosition());

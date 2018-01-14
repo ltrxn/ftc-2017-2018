@@ -58,7 +58,7 @@ public class B1State extends LinearOpMode {
     //Distances
     private static final int DISTANCE_RIGHT = 39; //Distance from balancing stone to crytobox positions
     private static final int DISTANCE_CENTER = 32;
-    private static final int DISTANCE_LEFT = 26;
+    private static final int DISTANCE_LEFT = 25;
     private static final int DISTANCE_TO_CRYPTOBOX = 7; //Distance to push block to cryptobox.
     private static final int DRIVE_TIME_OUT = 10; //Time out time in seconds
 
@@ -153,7 +153,6 @@ public class B1State extends LinearOpMode {
 
                     } else {
 
-                        currentJewelKnockerDown -= .02; //raise it up a bit
                         trialCounter++;
 
                     }
@@ -207,7 +206,7 @@ public class B1State extends LinearOpMode {
 
                         encoderDrive(DRIVE_SPEED, DISTANCE_TO_CRYPTOBOX, DISTANCE_TO_CRYPTOBOX, DRIVE_TIME_OUT);
                         robot.pulley.setPower(-.3);
-                        sleep(220);
+                        sleep(100);
                         robot.pulley.setPower(0);
                         sleep(1000);
 

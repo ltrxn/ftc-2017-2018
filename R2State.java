@@ -127,7 +127,6 @@ public class R2State extends LinearOpMode{
 
                     } else {
 
-                        currentJewelKnockerDown -= .02; //raise it up a bit
                         trialCounter++;
 
                     }

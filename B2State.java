@@ -47,8 +47,8 @@ public class B2State extends LinearOpMode{
     private static final double TICKS_PER_INCH  = 100; //# of ticks to be rotated to drive an inch
     private static final double DRIVE_SPEED     = .5; //Speed while going to crytobox
     private static final int DISTANCE_RIGHT     = 31; //Distance from balancing stone to crytobox positions
-    private static final int DISTANCE_CENTER    = 26;
-    private static final int DISTANCE_LEFT      = 18;
+    private static final int DISTANCE_CENTER    = 28;
+    private static final int DISTANCE_LEFT      = 20;
     private static final int DISTANCE_TO_CRYPTOBOX = 4; //Distance to push block to cryptobox.
     private static final int DRIVE_TIME_OUT     = 10;
 
@@ -90,7 +90,7 @@ public class B2State extends LinearOpMode{
                         robot.closeClaw();
                         sleep(500);
                         robot.pulley.setPower(.3);
-                        sleep(500);
+                        sleep(600);
                         robot.pulley.setPower(0);
 
                         newState(State.STATE_KNOCK_JEWEL);
@@ -139,8 +139,8 @@ public class B2State extends LinearOpMode{
 
                     robot.raiseJewelKnockerRight(); //lift up jewel knocker
                     encoderDrive(DRIVE_SPEED, -22,-22, DRIVE_TIME_OUT); //get off balancing stone
-                    encoderDrive(DRIVE_SPEED, -17, 17, DRIVE_TIME_OUT); //turn 90 counter clockwisee
-                    encoderDrive(DRIVE_SPEED, -19, -19, DRIVE_TIME_OUT); //back against the wall
+                    encoderDrive(DRIVE_SPEED, -17, 18, DRIVE_TIME_OUT); //turn 90 counter clockwisee
+                    encoderDrive(DRIVE_SPEED, -17, -17, DRIVE_TIME_OUT); //back against the wall
                     newState(State.STATE_DRIVE_TO_CRYPTOBOX);
 
                     break;
@@ -180,7 +180,7 @@ public class B2State extends LinearOpMode{
                     encoderDrive(DRIVE_SPEED, 5, 5, DRIVE_TIME_OUT);
                     encoderDrive(DRIVE_SPEED, -2, -2, DRIVE_TIME_OUT);
                     robot.pulley.setPower(-.3);
-                    sleep(200);
+                    sleep(120);
                     robot.pulley.setPower(0);
                     newState(State.STATE_STOP);
 
