@@ -28,10 +28,10 @@ public class TeleOpMichaelScott extends LinearOpMode {
     static final double DRIVE_GEAR_REDUCTION = .5;     // We have geared up, so Gear Reduction < 1
     static final int TETRIX_TICK_PER_REV = 1440;
     static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER * 3.1415); //Number of ticks in each inch (# of ticks in one rotation divided by the circumference of the wheel)
-    private double rightGlyphClawOpen = .7;
-    private double rightGlyphClawClose = .25;
-    private double leftGlyphClawOpen = .35;
-    private double leftGlyphClawClose = .7;
+    private double rightGlyphClawOpen = .8;
+    private double rightGlyphClawClose = .55;
+    private double leftGlyphClawOpen = .2;
+    private double leftGlyphClawClose = .45;
 
     private double currentRight = rightGlyphClawOpen;
     private double currentLeft = leftGlyphClawOpen;
@@ -60,13 +60,13 @@ public class TeleOpMichaelScott extends LinearOpMode {
             robot.relicTrackables.activate(); //activate vuforia
 
             //Gamepad 1 - Left Joystick - Strafes robot
-            double r = Math.hypot(-gamepad1.left_stick_x, -gamepad1.left_stick_y);
-            double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 3.5;
-            double rightY = gamepad1.right_stick_y / 1;
-            final double v1 = r * Math.cos(robotAngle) - rightY;
-            final double v2 = r * Math.sin(robotAngle) - rightY;
-            final double v3 = r * Math.sin(robotAngle) - rightY;
-            final double v4 = r * Math.cos(robotAngle) - rightY;
+            double r = Math.hypot(-gamepad1.right_stick_x, -gamepad1.right_stick_y);
+            double robotAngle = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI / 3.5;
+            double leftY = gamepad1.left_stick_y / 1.2;
+            final double v1 = r * Math.cos(robotAngle) - leftY;
+            final double v2 = r * Math.sin(robotAngle) - leftY;
+            final double v3 = r * Math.sin(robotAngle) - leftY;
+            final double v4 = r * Math.cos(robotAngle) - leftY;
 
             robot.leftFront.setPower(v1);
             robot.rightFront.setPower(v2);
@@ -90,7 +90,7 @@ public class TeleOpMichaelScott extends LinearOpMode {
 
             //Gamepad 1 - Right Trigger - Robot turns clockwise
             while (gamepad1.right_trigger > 0) {
-                double speed = gamepad1.right_trigger;
+                double speed = scaleInput(gamepad1.right_trigger);
                 robot.leftFront.setPower(speed);
                 robot.rightFront.setPower(-speed);
                 robot.leftBack.setPower(speed);
@@ -99,7 +99,7 @@ public class TeleOpMichaelScott extends LinearOpMode {
 
             //Gamepad 1 - Right Trigger - Robot turns clockwise
             while (gamepad1.left_trigger > 0) {
-                double speed = gamepad1.left_trigger;
+                double speed = scaleInput(gamepad1.left_trigger);
                 robot.leftFront.setPower(-speed);
                 robot.rightFront.setPower(speed);
                 robot.leftBack.setPower(-speed);
@@ -119,8 +119,8 @@ public class TeleOpMichaelScott extends LinearOpMode {
 
             //Gamepad 1/2 - dpad down - Put claw in middle position
             if (gamepad1.dpad_down || gamepad2.dpad_down) {
-                currentRight = 0.5;
-                currentLeft = 0.5;
+                currentRight = .65;
+                currentLeft = 0.35;
             }
 
 
