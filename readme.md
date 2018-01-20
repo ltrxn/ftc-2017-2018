@@ -9,16 +9,14 @@ This folder includes all of my code.
 * B2 = Blue alliance position away from relic drop off area (bottom left)
 
 ## Class Info
-* (A)AutonomousR1ColorDrive = Ideal autonomous code that uses a color sensor to reach position.
-* (A)AutonomousR1EncoderDrive = Ideal autonomous code that uses only encoders to reach position.
-* (A)AutonomousForTesting = Test distance and random stuff in this file.
-* (A)AutonomousTeamCode = The autonomous code that the whole team is working on together (from position R1)
+* (A)B1 = autonomous for the position B1.
+* (A)B2 = autonomous for the position B2.
+* (A)R1 = autonomous for the position R1.
+* (A)R2 = autnomous for the position R2.
 
-* (T)TeleOpForTesting = This teleop is driven by tank drive.
-* (T)TeleOpIdeal = Ideal teleop code for real thing (mecanum drive).
+* (T)TeleOpMichaelScott = Teleop
 
 * HardwareMichaelScott = Hardware of the robot. This class initializes all the motors, servos, and sensors.
-* HardwareIdeal = Hardware of the "ideal robot".
 
 You can use the hardware class by this code:
 ```

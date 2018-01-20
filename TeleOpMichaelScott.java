@@ -29,12 +29,13 @@ public class TeleOpMichaelScott extends LinearOpMode {
     static final int TETRIX_TICK_PER_REV = 1440;
     static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER * 3.1415); //Number of ticks in each inch (# of ticks in one rotation divided by the circumference of the wheel)
     private double rightGlyphClawOpen = .8;
-    private double rightGlyphClawClose = .55;
+    private double rightGlyphClawClose = .5;
     private double leftGlyphClawOpen = .2;
-    private double leftGlyphClawClose = .45;
+    private double leftGlyphClawClose = .5;
 
     private double currentRight = rightGlyphClawOpen;
     private double currentLeft = leftGlyphClawOpen;
+    private double lightPower = 0;
     /******VALUES******/
     private ElapsedTime runtime = new ElapsedTime(); // For time out (encoder drive)
     private double rightClawPos = 0;
@@ -57,7 +58,7 @@ public class TeleOpMichaelScott extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            robot.relicTrackables.activate(); //activate vuforia
+            //robot.relicTrackables.activate(); //activate vuforia
 
             //Gamepad 1 - Left Joystick - Strafes robot
             double r = Math.hypot(-gamepad1.right_stick_x, -gamepad1.right_stick_y);
@@ -110,17 +111,29 @@ public class TeleOpMichaelScott extends LinearOpMode {
             if (gamepad1.left_bumper || gamepad2.left_bumper) {
                 currentRight = rightGlyphClawOpen;
                 currentLeft = leftGlyphClawOpen;
+                lightPower = 0;
             }
             //Gamepad 1/2 - Left Bumper - Claws closes
             if (gamepad1.right_bumper || gamepad2.right_bumper) {
                 currentRight = rightGlyphClawClose;
                 currentLeft = leftGlyphClawClose;
+                lightPower = .2;
             }
 
             //Gamepad 1/2 - dpad down - Put claw in middle position
             if (gamepad1.dpad_down || gamepad2.dpad_down) {
-                currentRight = .65;
-                currentLeft = 0.35;
+                currentRight = .60;
+                currentLeft = .40;
+            }
+
+            if (gamepad2.dpad_right) {
+                pulleyByTicks(0);
+            }
+            if (gamepad2.dpad_up) {
+                pulleyByTicks(1500);
+            }
+            if (gamepad2.dpad_left) {
+                pulleyByTicks(2500);
             }
 
 
@@ -137,7 +150,13 @@ public class TeleOpMichaelScott extends LinearOpMode {
                 robot.lowerJewelKnockerRight();
             }
 
+            if (gamepad1.x || gamepad2.x) {
+                robot.resetEncoders();
+            }
 
+
+
+                robot.lights.setPower(lightPower);
 
             //telemetry
             telemetry.addData("Right jewel knocker position", robot.jewelKnockerRight.getPosition());
@@ -171,6 +190,28 @@ public class TeleOpMichaelScott extends LinearOpMode {
             dScale = scaleArray[index];
         }
         return dScale;
+    }
+
+    private void pulleyByTicks(int ticks) {
+        robot.pulley.setTargetPosition(ticks);
+
+        robot.pulley.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        robot.pulley.setPower(.6);
+        while (opModeIsActive() &&
+                (robot.pulley.isBusy())) {
+
+            // Display it for the driver.
+            telemetry.addData("Goal Position", "%7d", ticks);
+            telemetry.addData("Current Position", "%7d",
+                    robot.pulley.getCurrentPosition());
+            telemetry.update();
+        }
+        robot.pulley.setPower(0);
+
+        robot.pulley.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        sleep(100);   // optional pause after each move
     }
 
 }

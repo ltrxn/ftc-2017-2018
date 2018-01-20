@@ -25,6 +25,7 @@ public class HardwareMichaelScott {
     public DcMotor leftBack = null;
     public DcMotor rightBack = null;
     public DcMotor pulley;
+    public DcMotor lights;
     //Servos
     public Servo jewelKnockerRight = null;
     public Servo glyphClawRight = null;
@@ -68,6 +69,9 @@ public class HardwareMichaelScott {
         leftBack = map.dcMotor.get("leftBack");
         rightBack = map.dcMotor.get("rightBack");
         pulley = map.dcMotor.get("glyphPulley");
+
+        //LIGHTS
+        lights = map.dcMotor.get("lights");
 
         //SERVOS
         jewelKnockerRight = map.servo.get("jewelKnockerRight");
@@ -174,11 +178,14 @@ public class HardwareMichaelScott {
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
     }
 
     public void setMode(DcMotor.RunMode newMode) {
