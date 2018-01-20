@@ -26,5 +26,3 @@ HardwareMichaelScott robot = new HardwareMichaelScott();
 robot.init(hardwareMap);
 robot.exampleMotor.setPosition(.4);
 ```
-
----testing message--- :)
