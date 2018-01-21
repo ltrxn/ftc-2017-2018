@@ -13,6 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
+import java.util.Locale;
+
 /**
  * Created by Trxn on 11/7/2017.
  */
@@ -69,7 +71,7 @@ public class TeleOpMichaelScott extends LinearOpMode {
 
             //Gamepad 1 - Left Joystick - Strafes robot
             double findRadius = Math.hypot(-gamepad1.right_stick_x, -gamepad1.right_stick_y);
-            double findAngle = (Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI / 3.5) - angles.firstAngle;
+            double findAngle = (Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI / 3.5);
             double leftY = gamepad1.left_stick_y / 1.2;
             final double v1 = findRadius * Math.cos(findAngle) - leftY;
             final double v2 = findRadius * Math.sin(findAngle) - leftY;
@@ -174,6 +176,7 @@ public class TeleOpMichaelScott extends LinearOpMode {
             telemetry.addData("Encoder leftFront", robot.leftFront.getCurrentPosition());
             telemetry.addData("Encoder leftBack", robot.leftBack.getCurrentPosition());
             telemetry.addData("Encoder pulley", robot.pulley.getCurrentPosition());
+            telemetry.addData("Heading", formatAngle(angles.angleUnit, angles.firstAngle));
             telemetry.update();
             idle();
         }
@@ -221,4 +224,13 @@ public class TeleOpMichaelScott extends LinearOpMode {
         sleep(100);   // optional pause after each move
     }
 
+    String formatAngle(AngleUnit angleUnit, double angle)
+    {
+        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
+    }
+
+    String formatDegrees(double degrees)
+    {
+        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+    }
 }
