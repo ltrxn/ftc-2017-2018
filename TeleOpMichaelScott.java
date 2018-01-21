@@ -7,6 +7,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 /**
@@ -41,7 +45,8 @@ public class TeleOpMichaelScott extends LinearOpMode {
     private double rightClawPos = 0;
     private double leftClawPos = 0;
 
-
+    //gyro
+    private Orientation angles;
 
 
     @Override
@@ -52,22 +57,24 @@ public class TeleOpMichaelScott extends LinearOpMode {
         jewelKnockerCounter = 1;
         telemetry.addData(">", "Initialization Complete");
         telemetry.update();
-
+        telemetry.setMsTransmissionInterval(100);
         waitForStart();
 
 
         while (opModeIsActive()) {
 
+            angles  = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
             //robot.relicTrackables.activate(); //activate vuforia
 
             //Gamepad 1 - Left Joystick - Strafes robot
-            double r = Math.hypot(-gamepad1.right_stick_x, -gamepad1.right_stick_y);
-            double robotAngle = Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI / 3.5;
+            double findRadius = Math.hypot(-gamepad1.right_stick_x, -gamepad1.right_stick_y);
+            double findAngle = (Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI / 3.5) - angles.firstAngle;
             double leftY = gamepad1.left_stick_y / 1.2;
-            final double v1 = r * Math.cos(robotAngle) - leftY;
-            final double v2 = r * Math.sin(robotAngle) - leftY;
-            final double v3 = r * Math.sin(robotAngle) - leftY;
-            final double v4 = r * Math.cos(robotAngle) - leftY;
+            final double v1 = findRadius * Math.cos(findAngle) - leftY;
+            final double v2 = findRadius * Math.sin(findAngle) - leftY;
+            final double v3 = findRadius * Math.sin(findAngle) - leftY;
+            final double v4 = findRadius * Math.cos(findAngle) - leftY;
 
             robot.leftFront.setPower(v1);
             robot.rightFront.setPower(v2);
