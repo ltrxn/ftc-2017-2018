@@ -77,7 +77,7 @@ public class B1State extends LinearOpMode {
         robot.init(hardwareMap);
         sensorColor = hardwareMap.get(ColorSensor.class, "colorSensor");
 
-        robot.resetEncoders(); //reset encoders
+        robot.resetWheelEncoders(); //reset encoders
         robot.stopDriving(); //ensure motors are off
 
         telemetry.addData(">", "초기화가 완료되었습니다 (READY TO ROCK AND ROLL)"); //alert driver that robot is finished with initialization
@@ -263,7 +263,7 @@ public class B1State extends LinearOpMode {
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            robot.resetEncoders();
+            robot.resetWheelEncoders();
 
             // Determine new target position, and pass to motor controller
             newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int) (leftInches * MANUAL_TICKS_PER_INCH);

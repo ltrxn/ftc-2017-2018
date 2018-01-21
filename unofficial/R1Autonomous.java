@@ -4,7 +4,6 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -51,7 +50,7 @@ public class R1Autonomous extends LinearOpMode {
         //Initialize
         robot.init(hardwareMap);
         //gyro = (ModernRoboticsI2cGyro)hardwareMap.gyroSensor.get("gyro");
-        robot.resetEncoders();
+        robot.resetWheelEncoders();
 
         //gyro.calibrate();
         //while(gyro.isCalibrating()){

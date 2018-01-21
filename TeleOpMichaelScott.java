@@ -2,16 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 
 import java.util.Locale;
 
@@ -27,26 +23,21 @@ public class TeleOpMichaelScott extends LinearOpMode {
 
 
     /******VALUES******/
-    int jewelKnockerCounter;
-    int target;
-    static final double WHEEL_DIAMETER = 4.0; //In inches
-    static final int ANDYMARK_TICKS_PER_REV = 1120;
-    static final double DRIVE_GEAR_REDUCTION = .5;     // We have geared up, so Gear Reduction < 1
-    static final int TETRIX_TICK_PER_REV = 1440;
+    static final double WHEEL_DIAMETER          = 4.0; //In inches
+    static final int ANDYMARK_TICKS_PER_REV     = 1120;
+    static final double DRIVE_GEAR_REDUCTION    = .5;     // We have geared up, so Gear Reduction < 1
+    static final int TETRIX_TICK_PER_REV        = 1440;
     static final double TICKS_PER_INCH = (ANDYMARK_TICKS_PER_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER * 3.1415); //Number of ticks in each inch (# of ticks in one rotation divided by the circumference of the wheel)
-    private double rightGlyphClawOpen = .8;
-    private double rightGlyphClawClose = .5;
-    private double leftGlyphClawOpen = .2;
-    private double leftGlyphClawClose = .5;
 
-    private double currentRight = rightGlyphClawOpen;
-    private double currentLeft = leftGlyphClawOpen;
-    private double lightPower = 0;
-    /******VALUES******/
-    private ElapsedTime runtime = new ElapsedTime(); // For time out (encoder drive)
-    private double rightClawPos = 0;
-    private double leftClawPos = 0;
-
+    //glyph claw
+    private static final double RIGHT_GLYPH_CLAW_OPEN   = .8;
+    private static final double RIGHT_GLYPH_CLAW_CLOSE  = .5;
+    private static final double LEFT_GLYPH_CLAW_OPEN    = .2;
+    private static final double LEFT_GLYPH_CLAW_CLOSE   = .5;
+    private double currentRight  = RIGHT_GLYPH_CLAW_OPEN;
+    private double currentLeft   = LEFT_GLYPH_CLAW_OPEN;
+    //lights
+    private double lightPower    = 0;
     //gyro
     private Orientation angles;
 
@@ -54,24 +45,24 @@ public class TeleOpMichaelScott extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        robot.init(hardwareMap);
+        robot.init(hardwareMap); //initialize robot
 
-        jewelKnockerCounter = 1;
+        telemetry.setMsTransmissionInterval(100);
         telemetry.addData(">", "Initialization Complete");
         telemetry.update();
-        telemetry.setMsTransmissionInterval(100);
+
         waitForStart();
 
 
         while (opModeIsActive()) {
 
+            //get angles of the robot
             angles  = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-            //robot.relicTrackables.activate(); //activate vuforia
 
             //Gamepad 1 - Left Joystick - Strafes robot
             double findRadius = Math.hypot(-gamepad1.right_stick_x, -gamepad1.right_stick_y);
             double findAngle = (Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI / 3.5);
+            findAngle += angles.firstAngle;
             double leftY = gamepad1.left_stick_y / 1.2;
             final double v1 = findRadius * Math.cos(findAngle) - leftY;
             final double v2 = findRadius * Math.sin(findAngle) - leftY;
@@ -83,21 +74,6 @@ public class TeleOpMichaelScott extends LinearOpMode {
             robot.leftBack.setPower(v3);
             robot.rightBack.setPower(v4);
 
-
-            //Gamepad 2 - Left and Right Triggers = precise movement
-            while (gamepad2.left_trigger>0) {
-                robot.leftFront.setPower(.1);
-                robot.leftBack.setPower(.1);
-            }
-            while (gamepad2.right_trigger>0) {
-                robot.rightFront.setPower(.1);
-                robot.rightBack.setPower(.1);
-            }
-
-            //Gamepad 2 - Right Joystick - moves pulley
-            double pulleyPowerRight = -gamepad2.right_stick_y;
-            robot.pulley.setPower(scaleInput(pulleyPowerRight)); //scaled
-
             //Gamepad 1 - Right Trigger - Robot turns clockwise
             while (gamepad1.right_trigger > 0) {
                 double speed = scaleInput(gamepad1.right_trigger);
@@ -107,7 +83,7 @@ public class TeleOpMichaelScott extends LinearOpMode {
                 robot.rightBack.setPower(-speed);
             }
 
-            //Gamepad 1 - Right Trigger - Robot turns clockwise
+            //Gamepad 1 - Right Trigger - Robot turns counter-clockwise
             while (gamepad1.left_trigger > 0) {
                 double speed = scaleInput(gamepad1.left_trigger);
                 robot.leftFront.setPower(-speed);
@@ -118,14 +94,14 @@ public class TeleOpMichaelScott extends LinearOpMode {
 
             //Gamepad 1/2 - Right Bumper - Claws open
             if (gamepad1.left_bumper || gamepad2.left_bumper) {
-                currentRight = rightGlyphClawOpen;
-                currentLeft = leftGlyphClawOpen;
+                currentRight = RIGHT_GLYPH_CLAW_OPEN;
+                currentLeft = LEFT_GLYPH_CLAW_OPEN;
                 lightPower = 0;
             }
             //Gamepad 1/2 - Left Bumper - Claws closes
             if (gamepad1.right_bumper || gamepad2.right_bumper) {
-                currentRight = rightGlyphClawClose;
-                currentLeft = leftGlyphClawClose;
+                currentRight = RIGHT_GLYPH_CLAW_CLOSE;
+                currentLeft = LEFT_GLYPH_CLAW_CLOSE;
                 lightPower = .2;
             }
 
@@ -135,19 +111,13 @@ public class TeleOpMichaelScott extends LinearOpMode {
                 currentLeft = .40;
             }
 
-            if (gamepad2.dpad_right) {
-                pulleyByTicks(0);
-            }
-            if (gamepad2.dpad_up) {
-                pulleyByTicks(1500);
-            }
-            if (gamepad2.dpad_left) {
-                pulleyByTicks(2500);
-            }
+            //Gamepad 2 - Right Joystick - moves pulley
+            double pulleyPowerRight = scaleInput(-gamepad2.right_stick_y);
 
-
-            robot.glyphClawRight.setPosition(currentRight);
-            robot.glyphClawLeft.setPosition(currentLeft);
+            //Gamepad 2 - dpads - preset heights
+            if (gamepad2.dpad_right) { pulleyByTicks(0); } //Lowest - 1
+            if (gamepad2.dpad_up) { pulleyByTicks(1500); } // 2
+            if (gamepad2.dpad_left) { pulleyByTicks(2500); } // Highest - 3
 
             //Gamepad 1/2 - a - Raises jewel knocker right
             if (gamepad1.a || gamepad2.a) {
@@ -159,13 +129,21 @@ public class TeleOpMichaelScott extends LinearOpMode {
                 robot.lowerJewelKnockerRight();
             }
 
-            if (gamepad1.x || gamepad2.x) {
-                robot.resetEncoders();
+            //reset all wheel encoders
+            if (gamepad1.x) {
+                robot.resetWheelEncoders();
             }
 
+            //reset pulley encoder
+            if (gamepad2.x){
+                robot.resetPulleyEncoder();
+            }
 
-
-                robot.lights.setPower(lightPower);
+            //set power to glyph claw/pulley/lights
+            robot.glyphClawRight.setPosition(currentRight);
+            robot.glyphClawLeft.setPosition(currentLeft);
+            robot.pulley.setPower(pulleyPowerRight); //scaled
+            robot.lights.setPower(lightPower);
 
             //telemetry
             telemetry.addData("Right jewel knocker position", robot.jewelKnockerRight.getPosition());

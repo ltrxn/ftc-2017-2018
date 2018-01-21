@@ -4,7 +4,6 @@ import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -78,7 +77,7 @@ public class R1State extends LinearOpMode {
         robot.init(hardwareMap);
         sensorColor = hardwareMap.get(ColorSensor.class, "colorSensor");
 
-        robot.resetEncoders(); //reset encoders
+        robot.resetWheelEncoders(); //reset encoders
         robot.stopDriving(); //ensure motors are off
 
         telemetry.addData(">", "초기화가 완료되었습니다 (READY TO ROCK AND ROLL)"); //alert driver that robot is finished with initialization
@@ -271,7 +270,7 @@ public class R1State extends LinearOpMode {
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            robot.resetEncoders();
+            robot.resetWheelEncoders();
 
             // Determine new target position, and pass to motor controller
             newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int) (leftInches * TICKS_PER_INCH);

@@ -187,20 +187,21 @@ public class HardwareMichaelScott {
     }
 
     //Encoders
-
-    public void resetEncoders() {
+    public void resetWheelEncoders() {
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        pulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        pulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
 
+    public void resetPulleyEncoder() {
+        pulley.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pulley.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void setMode(DcMotor.RunMode newMode) {

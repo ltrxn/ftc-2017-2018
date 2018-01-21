@@ -49,7 +49,7 @@ public class R1SafeZone extends LinearOpMode {
         sensorDistance = hardwareMap.get(DistanceSensor.class, "colorSensor");
         telemetry.addData(">  ", "اضغط على تشغيل لبدء");
         telemetry.update();
-        robot.resetEncoders();
+        robot.resetWheelEncoders();
         waitForStart();
         robot.lowerJewelKnockerRight();
         sleep(1500);
@@ -91,7 +91,7 @@ public class R1SafeZone extends LinearOpMode {
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            robot.resetEncoders();
+            robot.resetWheelEncoders();
 
             // Determine new target position, and pass to motor controller
             newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int) (leftInches * TICKS_PER_INCH);

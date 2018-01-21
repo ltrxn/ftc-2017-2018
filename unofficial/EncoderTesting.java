@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.unofficial;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -14,6 +13,7 @@ import org.firstinspires.ftc.teamcode.HardwareMichaelScott;
  */
 
 @TeleOp (name="Encoder Values Testing")
+@Disabled
 public class EncoderTesting extends LinearOpMode {
     //Robot Hardware
     private HardwareMichaelScott robot = new HardwareMichaelScott();
@@ -30,7 +30,7 @@ public class EncoderTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
-        robot.resetEncoders(); //reset encoders
+        robot.resetWheelEncoders(); //reset encoders
         robot.stopDriving(); //ensure motors are off
 
         telemetry.addData(">", "초기화가 완료되었습니다 (READY TO ROCK AND ROLL)"); //alert driver that robot is finished with initialization
@@ -79,7 +79,7 @@ public class EncoderTesting extends LinearOpMode {
                 driveByTicks();
             }
             if (gamepad1.left_bumper) {
-                robot.resetEncoders();
+                robot.resetWheelEncoders();
             }
 
             //Gamepad 2 - Right Joystick - moves pulley
@@ -99,7 +99,7 @@ public class EncoderTesting extends LinearOpMode {
     }
 
     private void driveByTicks() {
-        robot.resetEncoders();
+        robot.resetWheelEncoders();
 
         robot.leftFront.setTargetPosition(ticksToGo);
         robot.leftBack.setTargetPosition(ticksToGo);
@@ -140,7 +140,7 @@ public class EncoderTesting extends LinearOpMode {
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            robot.resetEncoders();
+            robot.resetWheelEncoders();
 
             // Determine new target position, and pass to motor controller
             newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int) (leftInches * TICKS_PER_INCH);

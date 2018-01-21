@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.Color;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -9,8 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.teamcode.HardwareMichaelScott;
-import org.firstinspires.ftc.teamcode.R1State;
 
 /**
  * Created by Trxn on 12/28/2017.
@@ -65,7 +61,7 @@ public class R2State extends LinearOpMode{
         //initialization
         robot.init(hardwareMap);
         sensorColor = hardwareMap.get(ColorSensor.class, "colorSensor");
-        robot.resetEncoders(); //reset encoders
+        robot.resetWheelEncoders(); //reset encoders
         robot.stopDriving(); //ensure motors are off
         telemetry.addData(">", "초기화가 완료되었습니다 (READY TO ROCK AND ROLL)"); //alert driver that robot is finished with initialization
         telemetry.update();
@@ -219,7 +215,7 @@ public class R2State extends LinearOpMode{
         // ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            robot.resetEncoders();
+            robot.resetWheelEncoders();
 
             // Determine new target position, and pass to motor controller
             newLeftFrontTarget = robot.leftFront.getCurrentPosition() + (int) (leftInches * TICKS_PER_INCH);
