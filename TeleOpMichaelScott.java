@@ -61,14 +61,17 @@ public class TeleOpMichaelScott extends LinearOpMode {
 
             //Gamepad 1 - Left Joystick - Strafes robot
             double findRadius = Math.hypot(-gamepad1.right_stick_x, -gamepad1.right_stick_y);
-            double findAngle = (Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI / 3.5);
-            findAngle += angles.firstAngle;
+            double findRadian = (Math.atan2(-gamepad1.right_stick_y, gamepad1.right_stick_x) - Math.PI / 3.5);
+            double findDegree = (findRadian*(Math.PI/180) + angles.firstAngle);
+            double findAngle = findDegree*(180/Math.PI);
             double leftY = gamepad1.left_stick_y / 1.2;
             final double v1 = findRadius * Math.cos(findAngle) - leftY;
             final double v2 = findRadius * Math.sin(findAngle) - leftY;
             final double v3 = findRadius * Math.sin(findAngle) - leftY;
             final double v4 = findRadius * Math.cos(findAngle) - leftY;
 
+            telemetry.addData("Radius", findRadius);
+            telemetry.addData("Angle", findAngle);
             robot.leftFront.setPower(v1);
             robot.rightFront.setPower(v2);
             robot.leftBack.setPower(v3);
